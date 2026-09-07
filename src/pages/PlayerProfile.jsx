@@ -106,7 +106,7 @@ export default function PlayerProfile() {
   };
 
   const renderAttributeBar = (label, score, color) => {
-    const displayScore = score || 50;
+    const displayScore = score !== undefined && score !== null && score !== '' ? Number(score) : 0;
     return (
       <div key={label} style={{ marginBottom: '16px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', marginBottom: '4px' }}>
@@ -134,20 +134,16 @@ export default function PlayerProfile() {
       </Link>
 
       {/* Main Grid Header */}
-      <div className="glass" style={{
-        padding: '40px',
+      <div className="glass profile-header-grid" style={{
+        padding: 'clamp(24px, 4vw, 40px)',
         borderRadius: '24px',
-        display: 'grid',
-        gridTemplateColumns: '1fr 3fr',
-        gap: '40px',
-        alignItems: 'center',
-        marginBottom: '40px',
+        marginBottom: '36px',
         position: 'relative'
       }}>
         {/* Profile Pic */}
         <div style={{
-          width: '200px',
-          height: '200px',
+          width: 'clamp(140px, 20vw, 200px)',
+          height: 'clamp(140px, 20vw, 200px)',
           borderRadius: '50%',
           overflow: 'hidden',
           border: '4px solid var(--primary-green)',
@@ -167,7 +163,7 @@ export default function PlayerProfile() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
-              <h1 style={{ fontSize: '3rem', fontWeight: 800 }}>{profile.fullName}</h1>
+              <h1 style={{ fontSize: 'clamp(1.8rem, 4.5vw, 3rem)', fontWeight: 800 }}>{profile.fullName}</h1>
               {profile.verification && profile.verification !== 'none' && (
                 <span className="glow-btn" style={{
                   background: profile.verification === 'Elite' ? 'var(--secondary-orange)' : 'var(--primary-green)',
@@ -191,7 +187,7 @@ export default function PlayerProfile() {
             )}
           </div>
 
-          <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', fontSize: '1rem' }}>
+          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', fontSize: '0.95rem' }}>
             <span className="glass" style={{ padding: '6px 14px', borderRadius: '8px', color: 'var(--primary-green)' }}>
               Position: <strong>{profile.primaryPosition} {profile.secondaryPosition ? `/ ${profile.secondaryPosition}` : ''}</strong>
             </span>
@@ -203,17 +199,21 @@ export default function PlayerProfile() {
             </span>
           </div>
 
-          {/* Scout / Agent / Player Interaction Buttons */}
+          {/* Action Buttons (Scout recruitment buttons only for scouts/admins; players see CV & portfolio tools) */}
           <div style={{ display: 'flex', gap: '12px', marginTop: '10px', flexWrap: 'wrap' }}>
-            <button onClick={() => setShowContactModal(true)} className="btn-primary glow-btn">
-              <Mail size={18} /> Contact Scoutceler
-            </button>
-            <button onClick={handleShortlist} className="btn-secondary" style={{
-              borderColor: isShortlisted ? 'var(--secondary-orange)' : 'var(--border-color)',
-              color: isShortlisted ? 'var(--secondary-orange)' : 'var(--text-primary)'
-            }}>
-              <Star size={18} fill={isShortlisted ? 'var(--secondary-orange)' : 'none'} /> {isShortlisted ? 'Shortlisted' : 'Shortlist Player'}
-            </button>
+            {(userRole === 'scout' || userRole === 'admin') && (
+              <>
+                <button onClick={() => setShowContactModal(true)} className="btn-primary glow-btn">
+                  <Mail size={18} /> Contact Scoutceler
+                </button>
+                <button onClick={handleShortlist} className="btn-secondary" style={{
+                  borderColor: isShortlisted ? 'var(--secondary-orange)' : 'var(--border-color)',
+                  color: isShortlisted ? 'var(--secondary-orange)' : 'var(--text-primary)'
+                }}>
+                  <Star size={18} fill={isShortlisted ? 'var(--secondary-orange)' : 'none'} /> {isShortlisted ? 'Shortlisted' : 'Shortlist Player'}
+                </button>
+              </>
+            )}
             <button
               onClick={() => printPlayerCv(profile)}
               className="btn-secondary"
@@ -221,16 +221,17 @@ export default function PlayerProfile() {
             >
               <Download size={18} /> Download CV
             </button>
+            {auth.getCurrentUser()?.uid === profile.uid && (
+              <Link to="/dashboard" className="btn-primary" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                Edit My Profile
+              </Link>
+            )}
           </div>
         </div>
       </div>
 
       {/* Main Portfolio Grid */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '2fr 1fr',
-        gap: '40px'
-      }}>
+      <div className="profile-portfolio-grid">
         {/* Left Side: Video, CV, Bio */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
           {/* Highlight Video Card */}
@@ -284,19 +285,19 @@ export default function PlayerProfile() {
             <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', marginBottom: '24px' }}>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Rating</span>
-                <span style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--primary-green)' }}>{profile.rating || 50}</span>
+                <span style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--primary-green)' }}>{profile.rating !== undefined && profile.rating !== null ? profile.rating : 0}</span>
               </div>
               <div style={{ height: '30px', width: '1px', background: 'var(--border-color)' }}></div>
               <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                   <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Potential</span>
-                  <span style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--secondary-orange)' }}>{profile.potential || 65}</span>
+                  <span style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--secondary-orange)' }}>{profile.potential !== undefined && profile.potential !== null ? profile.potential : 0}</span>
                 </div>
               </div>
               <div style={{ height: '30px', width: '1px', background: 'var(--border-color)' }}></div>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Scout Conf.</span>
-                <span style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--text-primary)' }}>{profile.scoutConfidence || 50}%</span>
+                <span style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--text-primary)' }}>{profile.scoutConfidence !== undefined && profile.scoutConfidence !== null ? profile.scoutConfidence : 0}%</span>
               </div>
             </div>
           </div>
@@ -415,7 +416,7 @@ export default function PlayerProfile() {
               <Mail size={24} color="var(--primary-green)" />
               <div>
                 <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Send official offer or inquiry to</span>
-                <h4 style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--text-primary)', marginTop: '4px' }}>support@scoutceler.com</h4>
+                <h4 style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--text-primary)', marginTop: '4px' }}>scoutceler.business@gmail.com</h4>
               </div>
             </div>
 

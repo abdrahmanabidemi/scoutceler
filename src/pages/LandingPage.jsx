@@ -9,10 +9,10 @@ export default function LandingPage() {
       <section style={{
         position: 'relative',
         maxWidth: '1220px',
-        width: 'calc(100% - 32px)',
-        margin: '20px auto 20px auto',
-        padding: '76px 24px 72px 24px',
-        borderRadius: '32px',
+        width: 'calc(100% - clamp(16px, 4vw, 32px))',
+        margin: '16px auto 20px auto',
+        padding: 'clamp(44px, 7vw, 76px) clamp(16px, 4vw, 24px)',
+        borderRadius: 'clamp(20px, 4vw, 32px)',
         background: 'linear-gradient(180deg, #13271d 0%, #193627 50%, #12241b 100%)',
         border: '1px solid rgba(0, 209, 108, 0.25)',
         boxShadow: '0 16px 36px -10px rgba(0, 0, 0, 0.12)',
@@ -35,7 +35,7 @@ export default function LandingPage() {
         }} />
 
         <h1 style={{
-          fontSize: 'clamp(2.3rem, 5.5vw, 3.8rem)',
+          fontSize: 'clamp(2rem, 5.5vw, 3.8rem)',
           fontWeight: 800,
           lineHeight: 1.18,
           maxWidth: '920px',
@@ -49,7 +49,7 @@ export default function LandingPage() {
         </h1>
 
         <p style={{
-          fontSize: 'clamp(1.05rem, 1.8vw, 1.25rem)',
+          fontSize: 'clamp(1rem, 1.8vw, 1.25rem)',
           color: '#cbd5e1',
           maxWidth: '740px',
           lineHeight: '1.65',
@@ -57,21 +57,22 @@ export default function LandingPage() {
           position: 'relative',
           zIndex: 1
         }}>
-          Thousands of talented players are overlooked every year—not because they lack ability, but because they lack visibility.{' '}
-          <strong style={{ color: 'var(--primary-green)', fontWeight: 700 }}>Scoutceler</strong> changes that.
+          You put in the work every day on the pitch. Build your verified profile, showcase your match highlights and stats, and let top scouts and clubs see what you can do with{' '}
+          <strong style={{ color: 'var(--primary-green)', fontWeight: 700 }}>Scoutceler</strong>.
         </p>
 
-        <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center', position: 'relative', zIndex: 1 }}>
-          <Link to="/register" className="btn-primary glow-btn" style={{ padding: '15px 36px', fontSize: '1.05rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+        <div className="hero-buttons-container" style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center', position: 'relative', zIndex: 1, width: '100%', maxWidth: '520px' }}>
+          <Link to="/register" className="btn-primary glow-btn" style={{ padding: '14px 32px', fontSize: '1.05rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
             Get Discovered Now <ChevronRight size={20} />
           </Link>
           <Link to="/search" style={{
-            padding: '15px 36px',
+            padding: '14px 32px',
             fontSize: '1.05rem',
             textDecoration: 'none',
             display: 'inline-flex',
             alignItems: 'center',
-            borderRadius: '12px',
+            justifyContent: 'center',
+            borderRadius: '50px',
             background: 'rgba(255, 255, 255, 0.1)',
             color: '#ffffff',
             border: '1px solid rgba(255, 255, 255, 0.25)',
@@ -107,8 +108,8 @@ export default function LandingPage() {
 
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-            gap: '30px'
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
+            gap: '24px'
           }}>
             {/* For Players */}
             <div className="glass" style={{
@@ -263,7 +264,7 @@ export default function LandingPage() {
 
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 250px), 1fr))',
             gap: '24px'
           }}>
             {/* Card 1: Green Accent (Discovery) */}

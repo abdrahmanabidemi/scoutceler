@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { auth, db, storage } from '../firebase';
 import { Save, Image, Video, Upload, Eye, CheckCircle, Download, Bell, Users, Clock, Share2, Check } from 'lucide-react';
 import { printPlayerCv } from '../utils/exportData';
+import { COUNTRIES } from '../data/countries';
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
@@ -32,7 +33,24 @@ export default function Dashboard() {
 
     db.getProfile(currentUser.uid)
       .then((p) => {
-        setProfile(p);
+        const numberFields = [
+          'age', 'height', 'weight', 'jerseyNumber',
+          'speed', 'strength', 'balance', 'jump', 'acceleration', 'agility', 'stamina',
+          'passing', 'shooting', 'crossing', 'tackling', 'ballControl', 'dribbling', 'finishing',
+          'leadership', 'vision', 'composure', 'decisionMaking', 'positioning', 'aggression', 'teamwork'
+        ];
+        const sanitized = { ...p };
+        numberFields.forEach(field => {
+          if (sanitized[field] === undefined || sanitized[field] === null || sanitized[field] === '') {
+            sanitized[field] = 0;
+          } else {
+            sanitized[field] = Number(sanitized[field]);
+          }
+        });
+        if (sanitized.marketValue === undefined || sanitized.marketValue === null || sanitized.marketValue === '') {
+          sanitized.marketValue = '0';
+        }
+        setProfile(sanitized);
         setLoading(false);
       })
       .catch((err) => {
@@ -95,7 +113,21 @@ export default function Dashboard() {
     setErrorMsg('');
 
     try {
-      const updated = await db.saveProfile(user.uid, profile);
+      const numberFields = [
+        'age', 'height', 'weight', 'jerseyNumber',
+        'speed', 'strength', 'balance', 'jump', 'acceleration', 'agility', 'stamina',
+        'passing', 'shooting', 'crossing', 'tackling', 'ballControl', 'dribbling', 'finishing',
+        'leadership', 'vision', 'composure', 'decisionMaking', 'positioning', 'aggression', 'teamwork'
+      ];
+      const dataToSave = { ...profile };
+      numberFields.forEach(field => {
+        if (dataToSave[field] === '' || dataToSave[field] === undefined || dataToSave[field] === null) {
+          dataToSave[field] = 0;
+        } else {
+          dataToSave[field] = Number(dataToSave[field]);
+        }
+      });
+      const updated = await db.saveProfile(user.uid, dataToSave);
       setProfile(updated);
       setSuccessMsg('Profile updated successfully!');
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -133,19 +165,19 @@ export default function Dashboard() {
   }
 
   return (
-    <div style={{ maxWidth: '1000px', margin: '40px auto', padding: '0 20px', width: '100%' }}>
+    <div className="dashboard-container">
       {/* Title & Actions bar */}
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: '32px',
+        marginBottom: '28px',
         flexWrap: 'wrap',
         gap: '16px'
       }}>
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <h1 style={{ fontSize: '2.5rem', fontWeight: 700 }}>Edit Player Profile</h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+            <h1 style={{ fontSize: 'clamp(1.75rem, 4vw, 2.4rem)', fontWeight: 800 }}>Edit Player Profile</h1>
             {profile.verification && profile.verification !== 'none' && (
               <span className="glass" style={{
                 color: profile.verification === 'Elite' ? 'var(--secondary-orange)' : 'var(--primary-green)',
@@ -159,24 +191,35 @@ export default function Dashboard() {
               </span>
             )}
           </div>
-          <p style={{ color: 'var(--text-secondary)' }}>Fill out your football resume and statistics</p>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginTop: '4px' }}>Fill out your football resume and statistics</p>
         </div>
 
-        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
           <button
             type="button"
             onClick={() => printPlayerCv(profile)}
             className="btn-secondary"
-            style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '10px 18px', fontSize: '0.88rem' }}
             title="Download your Football CV"
           >
-            <Download size={18} /> Download CV
+            <Download size={16} /> Download CV
           </button>
-          <button onClick={() => navigate(`/player/${user.uid}`)} className="btn-secondary">
-            <Eye size={18} /> View Public Profile
+          <button
+            type="button"
+            onClick={() => navigate(`/player/${user.uid}`)}
+            className="btn-secondary"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '10px 18px', fontSize: '0.88rem' }}
+          >
+            <Eye size={16} /> View Profile
           </button>
-          <button onClick={handleSave} disabled={saving} className="btn-primary glow-btn">
-            <Save size={18} /> {saving ? 'Saving...' : 'Save Profile'}
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={saving}
+            className="btn-primary glow-btn"
+            style={{ padding: '10px 22px', fontSize: '0.88rem' }}
+          >
+            <Save size={16} /> {saving ? 'Saving...' : 'Save Profile'}
           </button>
         </div>
       </div>
@@ -212,7 +255,7 @@ export default function Dashboard() {
 
       {/* Profile Views & Activity Banner */}
       <div className="glass" style={{
-        padding: '20px 24px',
+        padding: '20px clamp(16px, 3vw, 24px)',
         borderRadius: '16px',
         marginBottom: '24px',
         display: 'flex',
@@ -227,30 +270,31 @@ export default function Dashboard() {
           <div style={{
             background: 'var(--primary-green)',
             color: '#fff',
-            width: '48px',
-            height: '48px',
+            width: '46px',
+            height: '46px',
             borderRadius: '12px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            flexShrink: 0,
             boxShadow: '0 4px 12px var(--primary-green-glow)'
           }}>
-            <Bell size={24} />
+            <Bell size={22} />
           </div>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+              <span style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)' }}>
                 {profile.viewCount || 0} Profile Views
               </span>
               <span style={{
-                background: 'rgba(0, 209, 108, 0.15)',
-                color: 'var(--primary-green)',
+                background: (profile.viewCount || 0) > 0 ? 'rgba(0, 209, 108, 0.15)' : 'rgba(148, 163, 184, 0.15)',
+                color: (profile.viewCount || 0) > 0 ? 'var(--primary-green)' : 'var(--text-muted)',
                 padding: '2px 8px',
                 borderRadius: '4px',
-                fontSize: '0.75rem',
+                fontSize: '0.72rem',
                 fontWeight: 700
               }}>
-                Live
+                {(profile.viewCount || 0) > 0 ? 'Active' : 'Awaiting Views'}
               </span>
             </div>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginTop: '2px' }}>
@@ -263,14 +307,14 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: '10px' }}>
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
           <button
             type="button"
             onClick={() => setActiveTab('notifications')}
             className="btn-secondary"
             style={{ padding: '8px 16px', fontSize: '0.85rem' }}
           >
-            <Eye size={16} /> View Visitors Log
+            <Eye size={15} /> Visitors Log ({Array.isArray(profile.views) ? profile.views.length : 0})
           </button>
           <button
             type="button"
@@ -278,20 +322,22 @@ export default function Dashboard() {
             className="btn-primary"
             style={{ padding: '8px 16px', fontSize: '0.85rem' }}
           >
-            {copiedLink ? <Check size={16} /> : <Share2 size={16} />}
+            {copiedLink ? <Check size={15} /> : <Share2 size={15} />}
             {copiedLink ? 'Link Copied!' : 'Share Portfolio'}
           </button>
         </div>
       </div>
 
       {/* Tabs Layout */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
         {/* Navigation Tabs */}
         <div style={{
           display: 'flex',
           borderBottom: '1px solid var(--border-color)',
-          gap: '8px',
+          gap: '4px',
           overflowX: 'auto',
+          WebkitOverflowScrolling: 'touch',
+          scrollbarWidth: 'none',
           paddingBottom: '2px'
         }}>
           {[
@@ -308,12 +354,13 @@ export default function Dashboard() {
                 color: activeTab === tab.id ? 'var(--primary-green)' : 'var(--text-secondary)',
                 border: 'none',
                 borderBottom: activeTab === tab.id ? '2px solid var(--primary-green)' : 'none',
-                padding: '12px 24px',
+                padding: '12px 20px',
                 cursor: 'pointer',
                 fontWeight: 600,
-                fontSize: '1rem',
+                fontSize: '0.95rem',
                 whiteSpace: 'nowrap',
-                borderRadius: '8px 8px 0 0'
+                borderRadius: '8px 8px 0 0',
+                flexShrink: 0
               }}
             >
               {tab.name}
@@ -322,13 +369,13 @@ export default function Dashboard() {
         </div>
 
         {/* Tab Contents */}
-        <form onSubmit={handleSave} className="glass" style={{ padding: '40px', borderRadius: '16px' }}>
+        <form onSubmit={handleSave} className="glass dashboard-card">
           {activeTab === 'personal' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-              <h3 style={{ fontSize: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '10px' }}>
+              <h3 style={{ fontSize: '1.4rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '10px' }}>
                 Personal Information
               </h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px' }}>
+              <div className="dashboard-form-grid">
                 <div className="form-group">
                   <label className="form-label">Full Name</label>
                   <input type="text" className="form-input" value={profile.fullName || ''} onChange={e => handleInputChange('fullName', e.target.value)} />
@@ -339,7 +386,19 @@ export default function Dashboard() {
                 </div>
                 <div className="form-group">
                   <label className="form-label">Nationality</label>
-                  <input type="text" className="form-input" value={profile.nationality || ''} onChange={e => handleInputChange('nationality', e.target.value)} />
+                  <select
+                    className="form-select"
+                    value={profile.nationality || ''}
+                    onChange={e => handleInputChange('nationality', e.target.value)}
+                  >
+                    <option value="">Select Country</option>
+                    {profile.nationality && !COUNTRIES.includes(profile.nationality) && (
+                      <option value={profile.nationality}>{profile.nationality}</option>
+                    )}
+                    {COUNTRIES.map(country => (
+                      <option key={country} value={country}>{country}</option>
+                    ))}
+                  </select>
                 </div>
                 <div className="form-group">
                   <label className="form-label">State / Region</label>
@@ -351,7 +410,13 @@ export default function Dashboard() {
                 </div>
                 <div className="form-group">
                   <label className="form-label">Age</label>
-                  <input type="number" className="form-input" value={profile.age || ''} onChange={e => handleInputChange('age', e.target.value)} />
+                  <input
+                    type="number"
+                    min="0"
+                    className="form-input"
+                    value={profile.age !== undefined && profile.age !== null ? profile.age : 0}
+                    onChange={e => handleInputChange('age', e.target.value === '' ? '' : Number(e.target.value))}
+                  />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Gender</label>
@@ -362,11 +427,23 @@ export default function Dashboard() {
                 </div>
                 <div className="form-group">
                   <label className="form-label">Height (cm)</label>
-                  <input type="number" className="form-input" value={profile.height || ''} onChange={e => handleInputChange('height', e.target.value)} />
+                  <input
+                    type="number"
+                    min="0"
+                    className="form-input"
+                    value={profile.height !== undefined && profile.height !== null ? profile.height : 0}
+                    onChange={e => handleInputChange('height', e.target.value === '' ? '' : Number(e.target.value))}
+                  />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Weight (kg)</label>
-                  <input type="number" className="form-input" value={profile.weight || ''} onChange={e => handleInputChange('weight', e.target.value)} />
+                  <input
+                    type="number"
+                    min="0"
+                    className="form-input"
+                    value={profile.weight !== undefined && profile.weight !== null ? profile.weight : 0}
+                    onChange={e => handleInputChange('weight', e.target.value === '' ? '' : Number(e.target.value))}
+                  />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Preferred Foot</label>
@@ -391,15 +468,25 @@ export default function Dashboard() {
                   <input type="text" className="form-input" placeholder="e.g. Attacking Midfielder" value={profile.secondaryPosition || ''} onChange={e => handleInputChange('secondaryPosition', e.target.value)} />
                 </div>
                 <div className="form-group">
+                  <label className="form-label">Phone Number (Direct Contact)</label>
+                  <input type="tel" className="form-input" placeholder="e.g. +234 803 123 4567" value={profile.phone || ''} onChange={e => handleInputChange('phone', e.target.value)} />
+                </div>
+                <div className="form-group">
                   <label className="form-label">Market Value (€)</label>
-                  <input type="text" className="form-input" placeholder="e.g. 500,000" value={profile.marketValue || ''} onChange={e => handleInputChange('marketValue', e.target.value)} />
+                  <input
+                    type="text"
+                    className="form-input"
+                    placeholder="0"
+                    value={profile.marketValue !== undefined && profile.marketValue !== null ? profile.marketValue : '0'}
+                    onChange={e => handleInputChange('marketValue', e.target.value)}
+                  />
                 </div>
               </div>
 
-              <h3 style={{ fontSize: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '10px', marginTop: '20px' }}>
+              <h3 style={{ fontSize: '1.4rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '10px', marginTop: '20px' }}>
                 Football Information
               </h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px' }}>
+              <div className="dashboard-form-grid">
                 <div className="form-group">
                   <label className="form-label">Current Club</label>
                   <input type="text" className="form-input" value={profile.currentClub || ''} onChange={e => handleInputChange('currentClub', e.target.value)} />
@@ -414,7 +501,13 @@ export default function Dashboard() {
                 </div>
                 <div className="form-group">
                   <label className="form-label">Jersey Number</label>
-                  <input type="number" className="form-input" value={profile.jerseyNumber || ''} onChange={e => handleInputChange('jerseyNumber', e.target.value)} />
+                  <input
+                    type="number"
+                    min="0"
+                    className="form-input"
+                    value={profile.jerseyNumber !== undefined && profile.jerseyNumber !== null ? profile.jerseyNumber : 0}
+                    onChange={e => handleInputChange('jerseyNumber', e.target.value === '' ? '' : Number(e.target.value))}
+                  />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Playing Style</label>
@@ -436,7 +529,7 @@ export default function Dashboard() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
               <div>
                 <h3 style={{ fontSize: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '10px' }}>
-                  Performance Attributes (Rating 1 - 99)
+                  Performance Attributes (Rating 0 - 99)
                 </h3>
                 <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '6px' }}>
                   Input your ratings honestly. Verified profiles require official testing records to keep these metrics.
@@ -445,17 +538,17 @@ export default function Dashboard() {
 
               {/* Physical Attributes */}
               <h4 style={{ color: 'var(--primary-green)', fontWeight: 600 }}>Physical Attributes</h4>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px' }}>
+              <div className="dashboard-form-grid">
                 {['speed', 'strength', 'balance', 'jump', 'acceleration', 'agility', 'stamina'].map(attr => (
                   <div key={attr} className="form-group">
                     <label className="form-label" style={{ textTransform: 'capitalize' }}>{attr}</label>
                     <input
                       type="number"
-                      min="1"
+                      min="0"
                       max="99"
                       className="form-input"
-                      value={profile[attr] || 50}
-                      onChange={e => handleInputChange(attr, e.target.value)}
+                      value={profile[attr] !== undefined && profile[attr] !== null ? profile[attr] : 0}
+                      onChange={e => handleInputChange(attr, e.target.value === '' ? '' : Number(e.target.value))}
                     />
                   </div>
                 ))}
@@ -463,17 +556,17 @@ export default function Dashboard() {
 
               {/* Technical Attributes */}
               <h4 style={{ color: 'var(--secondary-orange)', fontWeight: 600 }}>Technical Attributes</h4>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px' }}>
+              <div className="dashboard-form-grid">
                 {['passing', 'shooting', 'crossing', 'tackling', 'ballControl', 'dribbling', 'finishing'].map(attr => (
                   <div key={attr} className="form-group">
                     <label className="form-label" style={{ textTransform: 'capitalize' }}>{attr}</label>
                     <input
                       type="number"
-                      min="1"
+                      min="0"
                       max="99"
                       className="form-input"
-                      value={profile[attr] || 50}
-                      onChange={e => handleInputChange(attr, e.target.value)}
+                      value={profile[attr] !== undefined && profile[attr] !== null ? profile[attr] : 0}
+                      onChange={e => handleInputChange(attr, e.target.value === '' ? '' : Number(e.target.value))}
                     />
                   </div>
                 ))}
@@ -481,17 +574,17 @@ export default function Dashboard() {
 
               {/* Mental Attributes */}
               <h4 style={{ color: 'var(--text-primary)', fontWeight: 600 }}>Mental Attributes</h4>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px' }}>
+              <div className="dashboard-form-grid">
                 {['leadership', 'vision', 'composure', 'decisionMaking', 'positioning', 'aggression', 'teamwork'].map(attr => (
                   <div key={attr} className="form-group">
                     <label className="form-label" style={{ textTransform: 'capitalize' }}>{attr}</label>
                     <input
                       type="number"
-                      min="1"
+                      min="0"
                       max="99"
                       className="form-input"
-                      value={profile[attr] || 50}
-                      onChange={e => handleInputChange(attr, e.target.value)}
+                      value={profile[attr] !== undefined && profile[attr] !== null ? profile[attr] : 0}
+                      onChange={e => handleInputChange(attr, e.target.value === '' ? '' : Number(e.target.value))}
                     />
                   </div>
                 ))}

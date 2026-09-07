@@ -35,6 +35,7 @@ const seedDatabase = () => {
       {
         uid: 'p1',
         email: 'mbappe@scoutceler.com',
+        phone: '+33 6 12 34 56 78',
         fullName: 'Kylian Mbappé',
         nickname: 'Donatello',
         role: 'player',
@@ -74,16 +75,13 @@ const seedDatabase = () => {
         rating: 91,
         potential: 95,
         scoutConfidence: 98,
-        viewCount: 184,
-        views: [
-          { id: 'v1', viewerName: 'John Scout', viewerRole: 'scout', timestamp: new Date(Date.now() - 1000 * 60 * 25).toISOString() },
-          { id: 'v2', viewerName: 'Real Madrid Recruiter', viewerRole: 'scout', timestamp: new Date(Date.now() - 1000 * 60 * 180).toISOString() },
-          { id: 'v3', viewerName: 'Scoutceler Admin', viewerRole: 'admin', timestamp: new Date(Date.now() - 1000 * 60 * 60 * 18).toISOString() }
-        ]
+        viewCount: 0,
+        views: []
       },
       {
         uid: 'p2',
         email: 'bukayo@scoutceler.com',
+        phone: '+44 7911 123456',
         fullName: 'Bukayo Saka',
         nickname: 'Starboy',
         role: 'player',
@@ -123,15 +121,13 @@ const seedDatabase = () => {
         rating: 87,
         potential: 92,
         scoutConfidence: 94,
-        viewCount: 96,
-        views: [
-          { id: 'v4', viewerName: 'Premier League Scout', viewerRole: 'scout', timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString() },
-          { id: 'v5', viewerName: 'John Scout', viewerRole: 'scout', timestamp: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString() }
-        ]
+        viewCount: 0,
+        views: []
       },
       {
         uid: 'p3',
         email: 'junior@scoutceler.com',
+        phone: '+234 803 123 4567',
         fullName: 'Sunday Junior',
         nickname: 'Sunny',
         role: 'player',
@@ -189,6 +185,28 @@ const seedDatabase = () => {
 
     setLocalData(STORAGE_KEYS.PROFILES, mockProfiles);
     setLocalData(STORAGE_KEYS.USERS, mockUsers);
+  } else {
+    let changed = false;
+    const phoneMap = {
+      p1: '+33 6 12 34 56 78',
+      p2: '+44 7911 123456',
+      p3: '+234 803 123 4567'
+    };
+    existingProfiles.forEach(p => {
+      if (!p.phone && phoneMap[p.uid]) {
+        p.phone = phoneMap[p.uid];
+        changed = true;
+      }
+      // Reset fake pre-seeded views to 0 until actual views happen
+      if (p.views && p.views.some(v => ['v1', 'v2', 'v3', 'v4', 'v5'].includes(v.id))) {
+        p.views = p.views.filter(v => !['v1', 'v2', 'v3', 'v4', 'v5'].includes(v.id));
+        p.viewCount = p.views.length;
+        changed = true;
+      }
+    });
+    if (changed) {
+      setLocalData(STORAGE_KEYS.PROFILES, existingProfiles);
+    }
   }
 };
 
@@ -216,21 +234,22 @@ export const auth = {
           const newProfile = {
             uid,
             email,
+            phone: '',
             fullName,
             role: 'player',
             gender: 'Male', // Default gender
             verification: 'none',
-            rating: 50,
-            potential: 65,
-            scoutConfidence: 50,
+            rating: 0,
+            potential: 0,
+            scoutConfidence: 0,
             profilePic: '',
             videoUrl: '',
             nationality: '',
             state: '',
             city: '',
-            age: '',
-            height: '',
-            weight: '',
+            age: 0,
+            height: 0,
+            weight: 0,
             preferredFoot: 'Right',
             primaryPosition: 'Forward',
             secondaryPosition: '',
@@ -238,20 +257,20 @@ export const auth = {
             currentClub: '',
             previousClubs: '',
             academy: '',
-            jerseyNumber: '',
+            jerseyNumber: 0,
             playingStyle: '',
             strongFoot: 'Right',
-            weakFootRating: '3/5',
+            weakFootRating: '0/5',
             marketAvailability: 'Available',
             bio: '',
             achievements: '',
             awards: '',
             viewCount: 0,
             views: [],
-            // Attributes default
-            speed: 50, strength: 50, balance: 50, jump: 50, acceleration: 50, agility: 50, stamina: 50,
-            passing: 50, shooting: 50, crossing: 50, tackling: 50, ballControl: 50, dribbling: 50, finishing: 50,
-            leadership: 50, vision: 50, composure: 50, decisionMaking: 50, positioning: 50, aggression: 50, teamwork: 50,
+            // Attributes default (all start from 0)
+            speed: 0, strength: 0, balance: 0, jump: 0, acceleration: 0, agility: 0, stamina: 0,
+            passing: 0, shooting: 0, crossing: 0, tackling: 0, ballControl: 0, dribbling: 0, finishing: 0,
+            leadership: 0, vision: 0, composure: 0, decisionMaking: 0, positioning: 0, aggression: 0, teamwork: 0,
           };
           profiles.push(newProfile);
           setLocalData(STORAGE_KEYS.PROFILES, profiles);
@@ -329,14 +348,14 @@ export const db = {
           ...profileData,
           // Calculate a mock overall rating based on average of physical/technical/mental attributes
           rating: Math.round(
-            ((Number(profileData.speed || 50) + 
-              Number(profileData.strength || 50) + 
-              Number(profileData.stamina || 50) + 
-              Number(profileData.passing || 50) + 
-              Number(profileData.shooting || 50) + 
-              Number(profileData.ballControl || 50) + 
-              Number(profileData.vision || 50) + 
-              Number(profileData.composure || 50)) / 8)
+            ((Number(profileData.speed ?? 0) + 
+              Number(profileData.strength ?? 0) + 
+              Number(profileData.stamina ?? 0) + 
+              Number(profileData.passing ?? 0) + 
+              Number(profileData.shooting ?? 0) + 
+              Number(profileData.ballControl ?? 0) + 
+              Number(profileData.vision ?? 0) + 
+              Number(profileData.composure ?? 0)) / 8)
           )
         };
 

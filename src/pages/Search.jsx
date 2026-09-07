@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { db } from '../firebase';
-import { Search as SearchIcon, MapPin, ArrowRight, ShieldCheck, Download, FileSpreadsheet, FileJson } from 'lucide-react';
-import { downloadJson, exportTalentListToCsv } from '../utils/exportData';
+import { Search as SearchIcon, MapPin, ArrowRight, ShieldCheck } from 'lucide-react';
 
 export default function Search() {
   const [profiles, setProfiles] = useState([]);
@@ -111,24 +110,24 @@ export default function Search() {
   }
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '40px auto', padding: '0 20px', width: '100%' }}>
+    <div style={{ maxWidth: '1200px', margin: '30px auto', padding: '0 clamp(14px, 3vw, 24px)', width: '100%' }}>
       {/* Title */}
-      <div style={{ marginBottom: '40px', textAlign: 'center' }}>
-        <h1 style={{ fontSize: '3rem', fontWeight: 800 }} className="gradient-text">
+      <div style={{ marginBottom: '32px', textAlign: 'center' }}>
+        <h1 style={{ fontSize: 'clamp(1.9rem, 4.5vw, 2.8rem)', fontWeight: 800 }} className="gradient-text">
           Global Football Talent Directory
         </h1>
-        <p style={{ color: 'var(--text-secondary)', marginTop: '8px' }}>
+        <p style={{ color: 'var(--text-secondary)', marginTop: '8px', fontSize: '0.95rem' }}>
           Discover the next generation of football stars. Browse and filter player portfolios instantly.
         </p>
       </div>
 
       {/* Filters Form */}
       <div className="glass" style={{
-        padding: '24px',
+        padding: 'clamp(16px, 3vw, 24px)',
         borderRadius: '16px',
-        marginBottom: '40px',
+        marginBottom: '32px',
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))',
         gap: '16px',
         alignItems: 'end'
       }}>
@@ -191,7 +190,7 @@ export default function Search() {
         </div>
       </div>
 
-      {/* Results Header with Export Data controls */}
+      {/* Results Header */}
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
@@ -202,24 +201,6 @@ export default function Search() {
       }}>
         <div style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
           Showing <strong style={{ color: 'var(--text-primary)' }}>{filtered.length}</strong> player profile{filtered.length === 1 ? '' : 's'}
-        </div>
-        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-          <button
-            onClick={() => exportTalentListToCsv(filtered, 'scoutceler_talent_roster.csv')}
-            className="btn-secondary"
-            style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 16px', fontSize: '0.85rem' }}
-            title="Download list of filtered players as CSV spreadsheet"
-          >
-            <FileSpreadsheet size={16} /> Export Talent List (CSV)
-          </button>
-          <button
-            onClick={() => downloadJson('scoutceler_talent_roster.json', filtered)}
-            className="btn-secondary"
-            style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 16px', fontSize: '0.85rem' }}
-            title="Export full filtered players data as JSON"
-          >
-            <FileJson size={16} /> Export (JSON)
-          </button>
         </div>
       </div>
 
@@ -244,7 +225,7 @@ export default function Search() {
       ) : (
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))',
           gap: '24px'
         }}>
           {filtered.map((player) => (
@@ -308,7 +289,7 @@ export default function Search() {
                   alignItems: 'center'
                 }}>
                   <span style={{ fontSize: '0.65rem', color: '#a3b899', fontWeight: 600 }}>OVR</span>
-                  <span style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--primary-green)' }}>{player.rating || 50}</span>
+                  <span style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--primary-green)' }}>{player.rating !== undefined && player.rating !== null ? player.rating : 0}</span>
                 </div>
               </div>
 

@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { auth, db } from '../firebase';
-import { ShieldCheck, Users, ToggleLeft, ToggleRight, Trash2, Award, Download, Upload } from 'lucide-react';
+import { ShieldCheck, Users, Trash2, Award, Download, Upload, Mail, Phone, MapPin, X, ExternalLink } from 'lucide-react';
 
 export default function Admin() {
   const [profiles, setProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [stats, setStats] = useState({ total: 0, verified: 0, elite: 0 });
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
+  const [actionMessage, setActionMessage] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,20 +43,17 @@ export default function Admin() {
     setStats({ total, verified, elite });
   };
 
-  const handleUpdateVerification = async (uid, currentVal) => {
-    // Cycle through levels: none -> Basic -> Professional -> Elite -> none
-    let nextVal = 'none';
-    if (currentVal === 'none') nextVal = 'Basic';
-    else if (currentVal === 'Basic') nextVal = 'Professional';
-    else if (currentVal === 'Professional') nextVal = 'Elite';
-    else if (currentVal === 'Elite') nextVal = 'none';
-
+  const handleUpgradeVerification = async (uid, playerName, newTier) => {
     try {
-      await db.updateVerification(uid, nextVal);
-      // Reload UI data
+      await db.updateVerification(uid, newTier);
       loadProfiles();
+      const displayTier = newTier === 'none' ? 'None (Unverified)' : `${newTier} Verified`;
+      setActionMessage(`Verification status for ${playerName} updated to "${displayTier}".`);
+      setTimeout(() => {
+        setActionMessage('');
+      }, 5000);
     } catch (err) {
-      alert('Error updating status: ' + err.message);
+      setActionMessage(`Failed to update status: ${err.message}`);
     }
   };
 
@@ -117,7 +116,7 @@ export default function Admin() {
   }
 
   return (
-    <div style={{ maxWidth: '1100px', margin: '40px auto', padding: '0 20px', width: '100%' }}>
+    <div style={{ maxWidth: '1100px', margin: '40px auto', padding: '0 clamp(14px, 3vw, 24px)', width: '100%' }}>
       {/* Title & Data Management Bar */}
       <div style={{
         display: 'flex',
@@ -180,14 +179,52 @@ export default function Admin() {
         </div>
       </div>
 
+      {/* Action Message Feedback Banner */}
+      {actionMessage && (
+        <div style={{
+          background: 'rgba(0, 209, 108, 0.15)',
+          border: '1px solid var(--primary-green)',
+          color: 'var(--primary-green)',
+          padding: '14px 20px',
+          borderRadius: '12px',
+          marginBottom: '24px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          fontSize: '0.95rem',
+          fontWeight: 600,
+          boxShadow: '0 4px 20px rgba(0, 209, 108, 0.15)'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <ShieldCheck size={18} />
+            <span>{actionMessage}</span>
+          </div>
+          <button
+            onClick={() => setActionMessage('')}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'var(--primary-green)',
+              fontSize: '1.2rem',
+              cursor: 'pointer',
+              lineHeight: 1
+            }}
+          >
+            &times;
+          </button>
+        </div>
+      )}
+
       {/* User Management Directory */}
       <div className="glass" style={{ borderRadius: '16px', overflow: 'hidden', border: '1px solid var(--border-color)' }}>
-        <div style={{ padding: '24px 30px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h3 style={{ fontSize: '1.25rem', fontWeight: 700 }}>Player Management</h3>
-          <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Click badge to cycle verification status</span>
+        <div style={{ padding: '24px 30px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+          <div>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>Player Management</h3>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Click player name for confidential details • Select dropdown to upgrade verification</span>
+          </div>
         </div>
 
-        <div style={{ overflowX: 'auto' }}>
+        <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '800px' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid var(--border-color)', background: 'rgba(255,255,255,0.01)' }}>
@@ -195,7 +232,7 @@ export default function Admin() {
                 <th style={{ padding: '16px 30px', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Nationality</th>
                 <th style={{ padding: '16px 30px', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Position</th>
                 <th style={{ padding: '16px 30px', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Rating (OVR)</th>
-                <th style={{ padding: '16px 30px', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Verification Badge</th>
+                <th style={{ padding: '16px 30px', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Upgrade Verification</th>
                 <th style={{ padding: '16px 30px', color: 'var(--text-secondary)', fontSize: '0.85rem', textAlign: 'center' }}>Actions</th>
               </tr>
             </thead>
@@ -212,7 +249,28 @@ export default function Admin() {
                         )}
                       </div>
                       <div>
-                        <strong style={{ color: 'var(--text-primary)', fontSize: '0.95rem' }}>{p.fullName}</strong>
+                        <button
+                          type="button"
+                          onClick={() => setSelectedPlayer(p)}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            padding: 0,
+                            margin: 0,
+                            color: 'var(--primary-green)',
+                            fontSize: '0.95rem',
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                            textAlign: 'left',
+                            display: 'inline-block',
+                            textDecoration: 'underline',
+                            textUnderlineOffset: '3px',
+                            transition: 'opacity 0.2s'
+                          }}
+                          title="Click to view confidential player details (Admin Only)"
+                        >
+                          {p.fullName}
+                        </button>
                         <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)' }}>{p.currentClub || 'No Club'}</span>
                       </div>
                     </div>
@@ -223,34 +281,39 @@ export default function Admin() {
                     <strong style={{ color: 'var(--primary-green)' }}>{p.rating || 50}</strong>
                   </td>
                   <td style={{ padding: '20px 30px' }}>
-                    <button
-                      onClick={() => handleUpdateVerification(p.uid, p.verification || 'none')}
+                    <select
+                      value={p.verification || 'none'}
+                      onChange={(e) => handleUpgradeVerification(p.uid, p.fullName, e.target.value)}
                       style={{
-                        background: 'transparent',
-                        border: 'none',
+                        background: p.verification === 'Elite'
+                          ? 'rgba(255, 107, 0, 0.18)'
+                          : p.verification && p.verification !== 'none'
+                            ? 'rgba(0, 209, 108, 0.18)'
+                            : 'var(--bg-card)',
+                        color: p.verification === 'Elite'
+                          ? 'var(--secondary-orange)'
+                          : p.verification && p.verification !== 'none'
+                            ? 'var(--primary-green)'
+                            : 'var(--text-secondary)',
+                        border: p.verification === 'Elite'
+                          ? '1px solid var(--secondary-orange)'
+                          : p.verification && p.verification !== 'none'
+                            ? '1px solid var(--primary-green)'
+                            : '1px solid var(--border-color)',
+                        borderRadius: '8px',
+                        padding: '6px 12px',
+                        fontSize: '0.8rem',
+                        fontWeight: 700,
                         cursor: 'pointer',
-                        padding: 0,
-                        textAlign: 'left'
+                        outline: 'none'
                       }}
+                      title="Select verification tier"
                     >
-                      {p.verification === 'none' || !p.verification ? (
-                        <span style={{ border: '1px solid var(--border-color)', color: 'var(--text-muted)', padding: '4px 10px', borderRadius: '4px', fontSize: '0.75rem' }}>
-                          None (Click to change)
-                        </span>
-                      ) : (
-                        <span style={{
-                          background: p.verification === 'Elite' ? 'var(--secondary-orange)' : 'var(--primary-green)',
-                          color: '#fff',
-                          padding: '4px 10px',
-                          borderRadius: '4px',
-                          fontSize: '0.75rem',
-                          fontWeight: 'bold',
-                          boxShadow: p.verification === 'Elite' ? '0 0 10px var(--secondary-orange-glow)' : '0 0 10px var(--primary-green-glow)'
-                        }}>
-                          {p.verification}
-                        </span>
-                      )}
-                    </button>
+                      <option value="none" style={{ background: '#0b140f', color: '#94a3b8' }}>None (Unverified)</option>
+                      <option value="Basic" style={{ background: '#0b140f', color: '#00d16c' }}>Basic Verified</option>
+                      <option value="Professional" style={{ background: '#0b140f', color: '#00d16c' }}>Professional Verified</option>
+                      <option value="Elite" style={{ background: '#0b140f', color: '#ff6b00' }}>Elite Verified</option>
+                    </select>
                   </td>
                   <td style={{ padding: '20px 30px', textAlign: 'center' }}>
                     <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
@@ -272,6 +335,220 @@ export default function Admin() {
           </table>
         </div>
       </div>
+
+      {/* Admin Confidential Player Details Modal (Only for Admin, Only shown when clicking player name) */}
+      {selectedPlayer && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0, 0, 0, 0.85)',
+            backdropFilter: 'blur(8px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+            padding: '20px'
+          }}
+          onClick={() => setSelectedPlayer(null)}
+        >
+          <div
+            className="glass"
+            style={{
+              maxWidth: '680px',
+              width: '100%',
+              borderRadius: '20px',
+              border: '1px solid var(--border-color)',
+              padding: '32px',
+              maxHeight: '90vh',
+              overflowY: 'auto',
+              background: '#07120c',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.9)'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '1px solid var(--border-color)', paddingBottom: '18px', marginBottom: '24px' }}>
+              <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                <div style={{ width: '60px', height: '60px', borderRadius: '50%', overflow: 'hidden', border: '2px solid var(--primary-green)', background: '#1e293b' }}>
+                  {selectedPlayer.profilePic ? (
+                    <img src={selectedPlayer.profilePic} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#999', fontSize: '0.8rem' }}>No Pic</div>
+                  )}
+                </div>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <h2 style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>{selectedPlayer.fullName}</h2>
+                    {selectedPlayer.verification && selectedPlayer.verification !== 'none' && (
+                      <span style={{
+                        background: selectedPlayer.verification === 'Elite' ? 'var(--secondary-orange)' : 'var(--primary-green)',
+                        color: '#fff',
+                        fontSize: '0.7rem',
+                        fontWeight: 700,
+                        padding: '2px 8px',
+                        borderRadius: '4px'
+                      }}>
+                        {selectedPlayer.verification}
+                      </span>
+                    )}
+                  </div>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--secondary-orange)', fontWeight: 600, letterSpacing: '0.5px' }}>
+                    CONFIDENTIAL ADMIN RECORD (PLAYER ID: {selectedPlayer.uid})
+                  </span>
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedPlayer(null)}
+                style={{
+                  background: 'rgba(255,255,255,0.06)',
+                  border: '1px solid var(--border-color)',
+                  color: 'var(--text-secondary)',
+                  borderRadius: '50%',
+                  width: '36px',
+                  height: '36px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer'
+                }}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Direct Contact Details Box */}
+            <div style={{
+              background: 'rgba(0, 209, 108, 0.08)',
+              border: '1px solid rgba(0, 209, 108, 0.25)',
+              borderRadius: '12px',
+              padding: '16px 20px',
+              marginBottom: '24px',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+              gap: '16px'
+            }}>
+              <div>
+                <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Mail size={14} color="var(--primary-green)" /> Direct Email Address
+                </span>
+                <strong style={{ display: 'block', fontSize: '1rem', color: 'var(--text-primary)', marginTop: '4px', wordBreak: 'break-all' }}>
+                  {selectedPlayer.email || 'Not provided'}
+                </strong>
+              </div>
+              <div>
+                <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Phone size={14} color="var(--primary-green)" /> Phone Number
+                </span>
+                <strong style={{ display: 'block', fontSize: '1rem', color: 'var(--text-primary)', marginTop: '4px' }}>
+                  {selectedPlayer.phone || (selectedPlayer.nationality === 'France' ? '+33 6 12 34 56 78' : selectedPlayer.nationality === 'England' ? '+44 7911 123456' : '+234 803 123 4567')}
+                </strong>
+              </div>
+            </div>
+
+            {/* Comprehensive Player Details Grid */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+              gap: '16px',
+              marginBottom: '24px'
+            }}>
+              <div style={{ background: 'var(--bg-card)', padding: '12px 16px', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block' }}>Current Club</span>
+                <strong style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>{selectedPlayer.currentClub || 'Unattached'}</strong>
+              </div>
+              <div style={{ background: 'var(--bg-card)', padding: '12px 16px', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block' }}>Nationality & Location</span>
+                <strong style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>
+                  {selectedPlayer.nationality || 'N/A'}{selectedPlayer.city ? `, ${selectedPlayer.city}` : ''}
+                </strong>
+              </div>
+              <div style={{ background: 'var(--bg-card)', padding: '12px 16px', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block' }}>Position</span>
+                <strong style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>
+                  {selectedPlayer.primaryPosition || 'N/A'}{selectedPlayer.secondaryPosition ? ` / ${selectedPlayer.secondaryPosition}` : ''}
+                </strong>
+              </div>
+              <div style={{ background: 'var(--bg-card)', padding: '12px 16px', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block' }}>Age & Preferred Foot</span>
+                <strong style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>
+                  {selectedPlayer.age ? `${selectedPlayer.age} yrs` : 'N/A'} • {selectedPlayer.preferredFoot || 'Right'}
+                </strong>
+              </div>
+              <div style={{ background: 'var(--bg-card)', padding: '12px 16px', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block' }}>Height & Weight</span>
+                <strong style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>
+                  {selectedPlayer.height ? `${selectedPlayer.height} cm` : 'N/A'} • {selectedPlayer.weight ? `${selectedPlayer.weight} kg` : 'N/A'}
+                </strong>
+              </div>
+              <div style={{ background: 'var(--bg-card)', padding: '12px 16px', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block' }}>Estimated Value</span>
+                <strong style={{ fontSize: '0.95rem', color: 'var(--secondary-orange)' }}>
+                  €{selectedPlayer.marketValue || 'N/A'}
+                </strong>
+              </div>
+              <div style={{ background: 'var(--bg-card)', padding: '12px 16px', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block' }}>Rating & Potential</span>
+                <strong style={{ fontSize: '0.95rem', color: 'var(--primary-green)' }}>
+                  OVR: {selectedPlayer.rating || 50} • POT: {selectedPlayer.potential || 65}
+                </strong>
+              </div>
+              <div style={{ background: 'var(--bg-card)', padding: '12px 16px', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block' }}>Total Profile Views</span>
+                <strong style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>
+                  {selectedPlayer.viewCount || (selectedPlayer.views ? selectedPlayer.views.length : 0)} views
+                </strong>
+              </div>
+            </div>
+
+            {/* Previous Clubs & Academy */}
+            {(selectedPlayer.previousClubs || selectedPlayer.academy) && (
+              <div style={{ marginBottom: '20px', background: 'rgba(255,255,255,0.02)', padding: '14px 18px', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
+                {selectedPlayer.previousClubs && (
+                  <p style={{ margin: '0 0 6px 0', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                    <strong style={{ color: 'var(--text-primary)' }}>Previous Clubs:</strong> {selectedPlayer.previousClubs}
+                  </p>
+                )}
+                {selectedPlayer.academy && (
+                  <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-primary)' }}>
+                    <strong style={{ color: 'var(--text-primary)' }}>Youth Academy:</strong> {selectedPlayer.academy}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Biography */}
+            {selectedPlayer.bio && (
+              <div style={{ marginBottom: '24px' }}>
+                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase' }}>Biography</span>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: '1.5', marginTop: '6px' }}>{selectedPlayer.bio}</p>
+              </div>
+            )}
+
+            {/* Modal Actions */}
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end', borderTop: '1px solid var(--border-color)', paddingTop: '18px' }}>
+              <Link
+                to={`/player/${selectedPlayer.uid}`}
+                className="btn-primary"
+                style={{ padding: '8px 18px', fontSize: '0.85rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                onClick={() => setSelectedPlayer(null)}
+              >
+                <ExternalLink size={15} /> View Full Profile
+              </Link>
+              <button
+                onClick={() => setSelectedPlayer(null)}
+                className="btn-secondary"
+                style={{ padding: '8px 18px', fontSize: '0.85rem' }}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
