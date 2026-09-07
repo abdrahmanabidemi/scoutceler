@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { HashRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 import { auth } from './firebase';
 import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
@@ -9,10 +9,9 @@ import Search from './pages/Search';
 import PlayerProfile from './pages/PlayerProfile';
 import Admin from './pages/Admin';
 import { 
-  Search as SearchIcon, 
+  Search as SearchIcon,
   LogOut, 
   LayoutDashboard, 
-  ShieldAlert, 
   Phone, 
   Mail 
 } from 'lucide-react';
@@ -47,17 +46,22 @@ const YoutubeIcon = (props) => (
 function Navigation() {
   const [currentUser, setCurrentUser] = useState(auth.getCurrentUser());
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    // Poll to keep local state updated since we're using mock auth
-    const interval = setInterval(() => {
+    // Keep local state updated immediately upon route changes, events, and polling
+    const syncUser = () => {
       const user = auth.getCurrentUser();
-      if (JSON.stringify(user) !== JSON.stringify(currentUser)) {
-        setCurrentUser(user);
-      }
-    }, 500);
-    return () => clearInterval(interval);
-  }, [currentUser]);
+      setCurrentUser(user);
+    };
+    syncUser();
+    const interval = setInterval(syncUser, 300);
+    window.addEventListener('storage', syncUser);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('storage', syncUser);
+    };
+  }, [location]);
 
   const handleLogout = async () => {
     await auth.logout();
@@ -71,7 +75,7 @@ function Navigation() {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      padding: '0 40px',
+      padding: '0 clamp(14px, 3.5vw, 40px)',
       position: 'sticky',
       top: 0,
       zIndex: 100,
@@ -83,7 +87,7 @@ function Navigation() {
             src="/logo.jpg" 
             alt="Scoutceler Logo" 
             style={{ 
-              height: '58px', 
+              height: 'clamp(38px, 5vw, 54px)', 
               objectFit: 'contain',
               filter: 'invert(1) hue-rotate(180deg)',
               mixBlendMode: 'multiply'
@@ -92,16 +96,10 @@ function Navigation() {
         </Link>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-        <Link to="/search" style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '6px',
-          color: 'var(--text-secondary)',
-          textDecoration: 'none',
-          fontWeight: 500
-        }}>
-          <SearchIcon size={18} /> Search Players
+      <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(8px, 2vw, 20px)' }}>
+        <Link to="/search" className="nav-search-btn" title="Search Players">
+          <span className="nav-search-text">Search Players</span>
+          <span className="nav-search-icon"><SearchIcon size={18} /></span>
         </Link>
 
         {currentUser ? (
@@ -113,9 +111,24 @@ function Navigation() {
                 gap: '6px',
                 color: 'var(--text-secondary)',
                 textDecoration: 'none',
-                fontWeight: 500
+                fontWeight: 500,
+                fontSize: '0.9rem'
               }}>
-                <LayoutDashboard size={18} /> Dashboard
+                <LayoutDashboard size={18} /> <span className="nav-text-hide-mobile">Dashboard</span>
+              </Link>
+            )}
+
+            {currentUser.role === 'scout' && (
+              <Link to="/search" style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                color: 'var(--text-secondary)',
+                textDecoration: 'none',
+                fontWeight: 500,
+                fontSize: '0.9rem'
+              }}>
+                <LayoutDashboard size={18} /> <span className="nav-text-hide-mobile">Dashboard</span>
               </Link>
             )}
 
@@ -126,33 +139,34 @@ function Navigation() {
                 gap: '6px',
                 color: 'var(--secondary-orange)',
                 textDecoration: 'none',
-                fontWeight: 500
+                fontWeight: 500,
+                fontSize: '0.9rem'
               }}>
-                <ShieldAlert size={18} /> Admin Dashboard
+                Admin Dashboard
               </Link>
             )}
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              <span style={{ fontSize: '0.9rem', color: 'var(--text-primary)' }}>
-                Hello, <strong>{currentUser.fullName}</strong> ({currentUser.role})
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(8px, 1.5vw, 16px)' }}>
+              <span style={{ fontSize: '0.88rem', color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>
+                Hello, <strong>{currentUser.fullName}</strong>
               </span>
               <button onClick={handleLogout} className="btn-secondary" style={{
-                padding: '8px 16px',
-                fontSize: '0.9rem',
+                padding: '6px 12px',
+                fontSize: '0.85rem',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px'
               }}>
-                <LogOut size={16} /> Logout
+                <LogOut size={15} /> <span className="nav-text-hide-mobile">Logout</span>
               </button>
             </div>
           </>
         ) : (
-          <div style={{ display: 'flex', gap: '12px' }}>
-            <Link to="/login" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '0.9rem', textDecoration: 'none' }}>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <Link to="/login" className="btn-secondary" style={{ padding: '8px 14px', fontSize: '0.88rem', textDecoration: 'none' }}>
               Login
             </Link>
-            <Link to="/register" className="btn-primary" style={{ padding: '8px 16px', fontSize: '0.9rem', textDecoration: 'none' }}>
+            <Link to="/register" className="btn-primary" style={{ padding: '8px 16px', fontSize: '0.88rem', textDecoration: 'none' }}>
               Sign Up
             </Link>
           </div>
@@ -163,12 +177,19 @@ function Navigation() {
 }
 
 function Footer() {
+  const location = useLocation();
+
+  // Contact section and footer should not be showing under player dashboard
+  if (location.pathname === '/dashboard') {
+    return null;
+  }
+
   return (
     <footer style={{
       background: '#0b140f',
       borderTop: '3px solid var(--primary-green)',
       boxShadow: '0 -4px 25px rgba(0, 209, 108, 0.08)',
-      padding: '50px 40px 24px 40px',
+      padding: '50px clamp(16px, 4vw, 40px) 24px clamp(16px, 4vw, 40px)',
       marginTop: 'auto',
       color: '#ffffff'
     }}>
@@ -220,7 +241,7 @@ function Footer() {
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <Mail size={16} color="var(--secondary-orange)" />
-              <span style={{ color: '#f1f5f9' }}>support@scoutceler.com</span>
+              <span style={{ color: '#f1f5f9' }}>scoutceler.business@gmail.com</span>
             </div>
           </div>
         </div>
