@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, db, storage } from '../firebase';
-import { Save, Image, Video, Upload, Eye, CheckCircle, Download, Bell, Users, Clock, Share2, Check } from 'lucide-react';
+import { Save, Image, Video, Upload, Eye, CheckCircle, Download, Bell, Users, Clock, Share2, Check, Lock, Trash2, AlertTriangle, EyeOff, Phone, Settings } from 'lucide-react';
 import { printPlayerCv } from '../utils/exportData';
 import { COUNTRIES } from '../data/countries';
 
@@ -18,6 +18,24 @@ export default function Dashboard() {
   // Media state
   const [picFile, setPicFile] = useState(null);
   const [videoFile, setVideoFile] = useState(null);
+
+  // Settings state
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordLoading, setPasswordLoading] = useState(false);
+  const [passwordMsg, setPasswordMsg] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+
+  const [settingsPhone, setSettingsPhone] = useState('');
+  const [phoneLoading, setPhoneLoading] = useState(false);
+  const [phoneMsg, setPhoneMsg] = useState('');
+  const [phoneError, setPhoneError] = useState('');
+
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
 
   useEffect(() => {
     const currentUser = auth.getCurrentUser();
@@ -51,6 +69,7 @@ export default function Dashboard() {
           sanitized.marketValue = '0';
         }
         setProfile(sanitized);
+        setSettingsPhone(sanitized.phone || currentUser.phone || '');
         setLoading(false);
       })
       .catch((err) => {
@@ -58,6 +77,65 @@ export default function Dashboard() {
         setLoading(false);
       });
   }, [navigate]);
+
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    setPasswordMsg('');
+    setPasswordError('');
+    if (newPassword.length < 6) {
+      setPasswordError('New password must be at least 6 characters.');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordError('New passwords do not match.');
+      return;
+    }
+    setPasswordLoading(true);
+    try {
+      await auth.changePassword(user.uid, oldPassword, newPassword);
+      setPasswordMsg('Password changed successfully!');
+      setOldPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (err) {
+      setPasswordError(err.message || 'Failed to change password.');
+    } finally {
+      setPasswordLoading(false);
+    }
+  };
+
+  const handleUpdatePhone = async (e) => {
+    e.preventDefault();
+    setPhoneMsg('');
+    setPhoneError('');
+    if (!settingsPhone.trim()) {
+      setPhoneError('Please enter a valid phone number.');
+      return;
+    }
+    setPhoneLoading(true);
+    try {
+      await auth.updatePhone(user.uid, settingsPhone.trim());
+      handleInputChange('phone', settingsPhone.trim());
+      setPhoneMsg('Phone number updated successfully!');
+    } catch (err) {
+      setPhoneError(err.message || 'Failed to update phone number.');
+    } finally {
+      setPhoneLoading(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    setDeleteLoading(true);
+    setDeleteError('');
+    try {
+      await auth.deleteAccount(user.uid);
+      navigate('/', { replace: true });
+      window.location.reload();
+    } catch (err) {
+      setDeleteError(err.message || 'Failed to delete account.');
+      setDeleteLoading(false);
+    }
+  };
 
   const handleInputChange = (field, val) => {
     setProfile(prev => ({
@@ -344,7 +422,8 @@ export default function Dashboard() {
             { id: 'personal', name: 'Personal & Club Info' },
             { id: 'stats', name: 'Physical & Technical Stats' },
             { id: 'bio', name: 'Resume & Media' },
-            { id: 'notifications', name: `Profile Views (${profile.viewCount || 0})` }
+            { id: 'notifications', name: `Profile Views (${profile.viewCount || 0})` },
+            { id: 'settings', name: 'Account Settings' }
           ].map(tab => (
             <button
               key={tab.id}
@@ -880,7 +959,222 @@ export default function Dashboard() {
             </div>
           )}
 
-          {activeTab !== 'notifications' && (
+          {activeTab === 'settings' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+              <div>
+                <h3 style={{ fontSize: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '10px' }}>
+                  Account Settings
+                </h3>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '6px' }}>
+                  Manage your direct contact info, password credentials, and account status.
+                </p>
+              </div>
+
+              {/* Section 1: Phone Number */}
+              <div style={{
+                background: '#f8fafc',
+                border: '1px solid #e2e8f0',
+                borderRadius: '12px',
+                padding: '24px'
+              }}>
+                <h4 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#0f172a', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Phone size={18} color="var(--primary-green)" /> Direct Phone Number
+                </h4>
+                <p style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '16px' }}>
+                  Your direct contact number is kept confidential and only shared with verified scouts and administrators.
+                </p>
+
+                {phoneMsg && (
+                  <div style={{ background: 'rgba(0, 209, 108, 0.15)', border: '1px solid var(--primary-green)', color: '#008744', padding: '10px 14px', borderRadius: '8px', fontSize: '0.88rem', marginBottom: '16px', fontWeight: 600 }}>
+                    {phoneMsg}
+                  </div>
+                )}
+                {phoneError && (
+                  <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid #ef4444', color: '#dc2626', padding: '10px 14px', borderRadius: '8px', fontSize: '0.88rem', marginBottom: '16px', fontWeight: 600 }}>
+                    {phoneError}
+                  </div>
+                )}
+
+                <div style={{ maxWidth: '400px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <input
+                    type="tel"
+                    className="form-input"
+                    placeholder="e.g. +234 803 123 4567 or +33 6 12 34 56 78"
+                    value={settingsPhone}
+                    onChange={(e) => setSettingsPhone(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    disabled={phoneLoading}
+                    onClick={handleUpdatePhone}
+                    className="btn-primary"
+                    style={{ padding: '10px 20px', fontSize: '0.9rem', width: 'fit-content' }}
+                  >
+                    {phoneLoading ? 'Saving...' : 'Update Phone Number'}
+                  </button>
+                </div>
+              </div>
+
+              {/* Section 2: Change Password */}
+              <div style={{
+                background: '#f8fafc',
+                border: '1px solid #e2e8f0',
+                borderRadius: '12px',
+                padding: '24px'
+              }}>
+                <h4 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#0f172a', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Lock size={18} color="var(--secondary-orange)" /> Change Password
+                </h4>
+                <p style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '16px' }}>
+                  Ensure your account uses a strong, secure password of at least 6 characters.
+                </p>
+
+                {passwordMsg && (
+                  <div style={{ background: 'rgba(0, 209, 108, 0.15)', border: '1px solid var(--primary-green)', color: '#008744', padding: '10px 14px', borderRadius: '8px', fontSize: '0.88rem', marginBottom: '16px', fontWeight: 600 }}>
+                    {passwordMsg}
+                  </div>
+                )}
+                {passwordError && (
+                  <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid #ef4444', color: '#dc2626', padding: '10px 14px', borderRadius: '8px', fontSize: '0.88rem', marginBottom: '16px', fontWeight: 600 }}>
+                    {passwordError}
+                  </div>
+                )}
+
+                <div style={{ maxWidth: '400px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                  <div>
+                    <label style={{ fontSize: '0.85rem', color: '#475569', fontWeight: 600, display: 'block', marginBottom: '4px' }}>Current Password</label>
+                    <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        className="form-input"
+                        style={{ width: '100%', paddingRight: '40px' }}
+                        placeholder="Enter current password"
+                        value={oldPassword}
+                        onChange={(e) => setOldPassword(e.target.value)}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        style={{ position: 'absolute', right: '12px', background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}
+                      >
+                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style={{ fontSize: '0.85rem', color: '#475569', fontWeight: 600, display: 'block', marginBottom: '4px' }}>New Password</label>
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      className="form-input"
+                      placeholder="At least 6 characters"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ fontSize: '0.85rem', color: '#475569', fontWeight: 600, display: 'block', marginBottom: '4px' }}>Confirm New Password</label>
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      className="form-input"
+                      placeholder="Re-type new password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                    />
+                  </div>
+
+                  <button
+                    type="button"
+                    disabled={passwordLoading}
+                    onClick={handleChangePassword}
+                    className="btn-primary"
+                    style={{ padding: '10px 20px', fontSize: '0.9rem', width: 'fit-content' }}
+                  >
+                    {passwordLoading ? 'Updating...' : 'Update Password'}
+                  </button>
+                </div>
+              </div>
+
+              {/* Section 3: Delete Account */}
+              <div style={{
+                background: 'rgba(239, 68, 68, 0.05)',
+                border: '1px solid rgba(239, 68, 68, 0.3)',
+                borderRadius: '12px',
+                padding: '24px'
+              }}>
+                <h4 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#dc2626', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <AlertTriangle size={18} color="#dc2626" /> Delete Account
+                </h4>
+                <p style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '16px' }}>
+                  Permanently delete your Scoutceler player profile, statistics, CV media, and account. This action cannot be reversed.
+                </p>
+
+                {deleteError && (
+                  <div style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid #ef4444', color: '#dc2626', padding: '10px 14px', borderRadius: '8px', fontSize: '0.88rem', marginBottom: '16px', fontWeight: 600 }}>
+                    {deleteError}
+                  </div>
+                )}
+
+                {!confirmDelete ? (
+                  <button
+                    type="button"
+                    onClick={() => setConfirmDelete(true)}
+                    style={{
+                      background: '#ffffff',
+                      border: '1px solid #ef4444',
+                      color: '#dc2626',
+                      padding: '10px 20px',
+                      borderRadius: '8px',
+                      fontSize: '0.9rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}
+                  >
+                    <Trash2 size={16} /> Delete Account
+                  </button>
+                ) : (
+                  <div style={{ background: '#ffffff', padding: '18px', borderRadius: '10px', border: '1px solid #fca5a5', maxWidth: '500px' }}>
+                    <p style={{ fontSize: '0.95rem', color: '#b91c1c', fontWeight: 700, marginBottom: '14px' }}>
+                      Are you sure you want to permanently delete your account?
+                    </p>
+                    <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                      <button
+                        type="button"
+                        disabled={deleteLoading}
+                        onClick={handleDeleteAccount}
+                        style={{
+                          background: '#dc2626',
+                          border: 'none',
+                          color: '#ffffff',
+                          padding: '10px 22px',
+                          borderRadius: '8px',
+                          fontSize: '0.9rem',
+                          fontWeight: 700,
+                          cursor: 'pointer'
+                        }}
+                      >
+                        {deleteLoading ? 'Deleting...' : 'Yes, Permanently Delete My Account'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setConfirmDelete(false)}
+                        className="btn-secondary"
+                        style={{ padding: '10px 20px', fontSize: '0.9rem' }}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {activeTab !== 'notifications' && activeTab !== 'settings' && (
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '30px', borderTop: '1px solid var(--border-color)', paddingTop: '20px' }}>
               <button type="submit" disabled={saving} className="btn-primary glow-btn" style={{ padding: '14px 40px' }}>
                 <Save size={20} /> {saving ? 'Saving...' : 'Save Profile Details'}

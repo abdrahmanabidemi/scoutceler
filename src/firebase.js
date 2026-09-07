@@ -323,6 +323,81 @@ export const auth = {
     });
   },
 
+  // Change Password for logged in user
+  changePassword: async (uid, oldPassword, newPassword) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const users = getLocalData(STORAGE_KEYS.USERS);
+        const index = users.findIndex(u => u.uid === uid);
+        if (index === -1) {
+          return reject(new Error('User not found.'));
+        }
+        if (oldPassword && users[index].password !== oldPassword) {
+          return reject(new Error('Current password does not match.'));
+        }
+        users[index].password = newPassword;
+        setLocalData(STORAGE_KEYS.USERS, users);
+        
+        // Update current user if logged in
+        const current = getLocalData(STORAGE_KEYS.CURRENT_USER, null);
+        if (current && current.uid === uid) {
+          current.password = newPassword;
+          setLocalData(STORAGE_KEYS.CURRENT_USER, current);
+        }
+        resolve(users[index]);
+      }, 400);
+    });
+  },
+
+  // Update Phone Number for user and profile
+  updatePhone: async (uid, newPhone) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const users = getLocalData(STORAGE_KEYS.USERS);
+        const index = users.findIndex(u => u.uid === uid);
+        if (index === -1) {
+          return reject(new Error('User not found.'));
+        }
+        users[index].phone = newPhone;
+        setLocalData(STORAGE_KEYS.USERS, users);
+
+        // Update in profiles if exists
+        const profiles = getLocalData(STORAGE_KEYS.PROFILES);
+        const pIndex = profiles.findIndex(p => p.uid === uid);
+        if (pIndex !== -1) {
+          profiles[pIndex].phone = newPhone;
+          setLocalData(STORAGE_KEYS.PROFILES, profiles);
+        }
+
+        // Update in current user
+        const current = getLocalData(STORAGE_KEYS.CURRENT_USER, null);
+        if (current && current.uid === uid) {
+          current.phone = newPhone;
+          setLocalData(STORAGE_KEYS.CURRENT_USER, current);
+        }
+        resolve({ user: users[index], phone: newPhone });
+      }, 400);
+    });
+  },
+
+  // Delete User Account permanently
+  deleteAccount: async (uid) => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        let users = getLocalData(STORAGE_KEYS.USERS);
+        users = users.filter(u => u.uid !== uid);
+        setLocalData(STORAGE_KEYS.USERS, users);
+
+        let profiles = getLocalData(STORAGE_KEYS.PROFILES);
+        profiles = profiles.filter(p => p.uid !== uid);
+        setLocalData(STORAGE_KEYS.PROFILES, profiles);
+
+        localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
+        resolve(true);
+      }, 500);
+    });
+  },
+
   // Get Current Logged In User
   getCurrentUser: () => {
     return getLocalData(STORAGE_KEYS.CURRENT_USER, null);

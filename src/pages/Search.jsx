@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { db } from '../firebase';
-import { Search as SearchIcon, MapPin, ArrowRight, ShieldCheck } from 'lucide-react';
+import { auth, db } from '../firebase';
+import { Search as SearchIcon, MapPin, ArrowRight, ShieldCheck, Settings } from 'lucide-react';
+import AccountSettingsModal from '../components/AccountSettingsModal';
 
 export default function Search() {
   const [profiles, setProfiles] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showSettings, setShowSettings] = useState(false);
+  const currentUser = auth.getCurrentUser();
 
   // Filter States
   const [searchQuery, setSearchQuery] = useState('');
@@ -119,6 +122,17 @@ export default function Search() {
         <p style={{ color: 'var(--text-secondary)', marginTop: '8px', fontSize: '0.95rem' }}>
           Discover the next generation of football stars. Browse and filter player portfolios instantly.
         </p>
+        {currentUser && currentUser.role === 'scout' && (
+          <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'center' }}>
+            <button
+              onClick={() => setShowSettings(true)}
+              className="btn-secondary"
+              style={{ padding: '8px 18px', fontSize: '0.88rem', display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+            >
+              <Settings size={16} /> Scout Account Settings
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Filters Form */}
@@ -351,6 +365,11 @@ export default function Search() {
           ))}
         </div>
       )}
+      {/* Scout Account Settings Modal */}
+      <AccountSettingsModal
+        isOpen={showSettings}
+        onClose={() => setShowSettings(false)}
+      />
     </div>
   );
 }

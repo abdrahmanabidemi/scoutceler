@@ -69,6 +69,13 @@ function Navigation() {
     navigate('/');
   };
 
+  const getDashboardPath = () => {
+    if (!currentUser) return '/';
+    if (currentUser.role === 'admin') return '/admin';
+    if (currentUser.role === 'scout') return '/search';
+    return '/dashboard';
+  };
+
   return (
     <nav className="glass" style={{
       height: 'var(--header-height)',
@@ -82,94 +89,77 @@ function Navigation() {
       borderBottom: '1px solid var(--border-color)',
     }}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
-          <img 
-            src="/logo.jpg" 
-            alt="Scoutceler Logo" 
-            style={{ 
-              height: 'clamp(38px, 5vw, 54px)', 
-              objectFit: 'contain',
-              filter: 'invert(1) hue-rotate(180deg)',
-              mixBlendMode: 'multiply'
-            }} 
-          />
-        </Link>
+        {currentUser ? (
+          <Link to={getDashboardPath()} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }} title="Go to Dashboard">
+            <img 
+              src="/logo.jpg" 
+              alt="Scoutceler Logo" 
+              style={{ 
+                height: 'clamp(38px, 5vw, 54px)', 
+                objectFit: 'contain',
+                filter: 'invert(1) hue-rotate(180deg)',
+                mixBlendMode: 'multiply'
+              }} 
+            />
+            <span style={{
+              fontSize: '1rem',
+              fontWeight: 700,
+              color: 'var(--text-primary)',
+              padding: '4px 10px',
+              borderRadius: '8px',
+              background: 'rgba(0, 209, 108, 0.08)',
+              border: '1px solid rgba(0, 209, 108, 0.2)',
+              letterSpacing: '-0.2px'
+            }}>
+              Dashboard
+            </span>
+          </Link>
+        ) : (
+          <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
+            <img 
+              src="/logo.jpg" 
+              alt="Scoutceler Logo" 
+              style={{ 
+                height: 'clamp(38px, 5vw, 54px)', 
+                objectFit: 'contain',
+                filter: 'invert(1) hue-rotate(180deg)',
+                mixBlendMode: 'multiply'
+              }} 
+            />
+          </Link>
+        )}
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(8px, 2vw, 20px)' }}>
-        <Link to="/search" className="nav-search-btn" title="Search Players">
-          <span className="nav-search-text">Search Players</span>
-          <span className="nav-search-icon"><SearchIcon size={18} /></span>
-        </Link>
-
         {currentUser ? (
+          <button
+            onClick={handleLogout}
+            className="btn-secondary"
+            style={{
+              padding: '8px 20px',
+              fontSize: '0.88rem',
+              fontWeight: 600,
+              borderRadius: '50px',
+              cursor: 'pointer'
+            }}
+          >
+            Sign Out
+          </button>
+        ) : (
           <>
-            {currentUser.role === 'player' && (
-              <Link to="/dashboard" style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                color: 'var(--text-secondary)',
-                textDecoration: 'none',
-                fontWeight: 500,
-                fontSize: '0.9rem'
-              }}>
-                <LayoutDashboard size={18} /> <span className="nav-text-hide-mobile">Dashboard</span>
+            <Link to="/search" className="nav-search-btn" title="Search Players">
+              <span className="nav-search-text">Search Players</span>
+              <span className="nav-search-icon"><SearchIcon size={18} /></span>
+            </Link>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <Link to="/login" className="btn-secondary" style={{ padding: '8px 14px', fontSize: '0.88rem', textDecoration: 'none' }}>
+                Login
               </Link>
-            )}
-
-            {currentUser.role === 'scout' && (
-              <Link to="/search" style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                color: 'var(--text-secondary)',
-                textDecoration: 'none',
-                fontWeight: 500,
-                fontSize: '0.9rem'
-              }}>
-                <LayoutDashboard size={18} /> <span className="nav-text-hide-mobile">Dashboard</span>
+              <Link to="/register" className="btn-primary" style={{ padding: '8px 16px', fontSize: '0.88rem', textDecoration: 'none' }}>
+                Sign Up
               </Link>
-            )}
-
-            {currentUser.role === 'admin' && (
-              <Link to="/admin" style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                color: 'var(--secondary-orange)',
-                textDecoration: 'none',
-                fontWeight: 500,
-                fontSize: '0.9rem'
-              }}>
-                Admin Dashboard
-              </Link>
-            )}
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(8px, 1.5vw, 16px)' }}>
-              <span style={{ fontSize: '0.88rem', color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>
-                Hello, <strong>{currentUser.fullName}</strong>
-              </span>
-              <button onClick={handleLogout} className="btn-secondary" style={{
-                padding: '6px 12px',
-                fontSize: '0.85rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px'
-              }}>
-                <LogOut size={15} /> <span className="nav-text-hide-mobile">Logout</span>
-              </button>
             </div>
           </>
-        ) : (
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <Link to="/login" className="btn-secondary" style={{ padding: '8px 14px', fontSize: '0.88rem', textDecoration: 'none' }}>
-              Login
-            </Link>
-            <Link to="/register" className="btn-primary" style={{ padding: '8px 16px', fontSize: '0.88rem', textDecoration: 'none' }}>
-              Sign Up
-            </Link>
-          </div>
         )}
       </div>
     </nav>
