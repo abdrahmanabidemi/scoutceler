@@ -143,18 +143,6 @@ export default function LandingPage() {
                 }}>
                   <Trophy size={28} />
                 </div>
-                <div style={{
-                  display: 'inline-block',
-                  fontSize: '0.8rem',
-                  fontWeight: 800,
-                  color: 'var(--primary-green)',
-                  background: 'rgba(0, 209, 108, 0.1)',
-                  padding: '2px 10px',
-                  borderRadius: '20px',
-                  marginBottom: '10px'
-                }}>
-                  PATH A
-                </div>
                 <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '12px', color: 'var(--text-primary)' }}>
                   I'm a player
                 </h3>
@@ -200,18 +188,6 @@ export default function LandingPage() {
                 }}>
                   <Compass size={28} />
                 </div>
-                <div style={{
-                  display: 'inline-block',
-                  fontSize: '0.8rem',
-                  fontWeight: 800,
-                  color: 'var(--secondary-orange)',
-                  background: 'rgba(249, 115, 22, 0.1)',
-                  padding: '2px 10px',
-                  borderRadius: '20px',
-                  marginBottom: '10px'
-                }}>
-                  PATH B
-                </div>
                 <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '12px', color: 'var(--text-primary)' }}>
                   I'm a scout
                 </h3>
@@ -220,7 +196,7 @@ export default function LandingPage() {
                 </p>
               </div>
               <div style={{ marginTop: '24px' }}>
-                <Link to="/search" className="btn-secondary" style={{
+                <Link to="/search" className="btn-primary" style={{
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '6px',
@@ -257,18 +233,6 @@ export default function LandingPage() {
                 }}>
                   <ShieldCheck size={28} />
                 </div>
-                <div style={{
-                  display: 'inline-block',
-                  fontSize: '0.8rem',
-                  fontWeight: 800,
-                  color: 'var(--primary-green)',
-                  background: 'rgba(0, 209, 108, 0.1)',
-                  padding: '2px 10px',
-                  borderRadius: '20px',
-                  marginBottom: '10px'
-                }}>
-                  PATH C
-                </div>
                 <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '12px', color: 'var(--text-primary)' }}>
                   I'm a club
                 </h3>
@@ -277,7 +241,7 @@ export default function LandingPage() {
                 </p>
               </div>
               <div style={{ marginTop: '24px' }}>
-                <Link to="/search" className="btn-secondary" style={{
+                <Link to="/search" className="btn-primary" style={{
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '6px',
