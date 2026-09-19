@@ -45,20 +45,19 @@ export default function LandingPage() {
           position: 'relative',
           zIndex: 1
         }}>
-          Football's Fastest Talent Discovery Platform
+          Discover Africa's Next Football Stars.
         </h1>
 
         <p style={{
           fontSize: 'clamp(1rem, 1.8vw, 1.25rem)',
           color: '#cbd5e1',
-          maxWidth: '740px',
+          maxWidth: '780px',
           lineHeight: '1.65',
           marginBottom: '36px',
           position: 'relative',
           zIndex: 1
         }}>
-          You put in the work every day on the pitch. Build your verified profile, showcase your match highlights and stats, and let top scouts and clubs see what you can do with{' '}
-          <strong style={{ color: 'var(--primary-green)', fontWeight: 700 }}>Scoutceler</strong>.
+          Scoutceler connects talented footballers with scouts, agents and clubs through professional player profiles, video highlights and intelligent talent discovery.
         </p>
 
         <div className="hero-buttons-container" style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center', position: 'relative', zIndex: 1, width: '100%', maxWidth: '520px' }}>
@@ -84,7 +83,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* 2. ROLE VALUE PROPOSITIONS (For Players, Clubs, Scouts) */}
+      {/* 2. HOW SCOUTCELER WORKS (Three simple paths) */}
       <section style={{
         padding: '80px 24px',
         background: '#ffffff',
@@ -94,16 +93,26 @@ export default function LandingPage() {
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '48px' }}>
             <h2 style={{
-              fontSize: 'clamp(1.8rem, 3.5vw, 2.5rem)',
+              fontSize: 'clamp(1.9rem, 3.8vw, 2.6rem)',
               fontWeight: 800,
               color: 'var(--text-primary)',
               maxWidth: '850px',
               marginLeft: 'auto',
               marginRight: 'auto',
-              lineHeight: 1.3
+              lineHeight: 1.25,
+              marginBottom: '12px'
             }}>
-              A permanent digital home where performances, highlights, and verified stats are discovered worldwide.
+              How Scoutceler Works
             </h2>
+            <p style={{
+              fontSize: 'clamp(1.05rem, 2vw, 1.25rem)',
+              color: 'var(--text-secondary)',
+              maxWidth: '720px',
+              margin: '0 auto',
+              lineHeight: 1.5
+            }}>
+              Three simple paths. One big goal - more opportunities for African talent.
+            </p>
           </div>
 
           <div style={{
@@ -111,7 +120,7 @@ export default function LandingPage() {
             gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
             gap: '24px'
           }}>
-            {/* For Players */}
+            {/* A. I'm a player */}
             <div className="glass" style={{
               padding: '36px',
               borderRadius: '20px',
@@ -129,24 +138,46 @@ export default function LandingPage() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  marginBottom: '24px',
+                  marginBottom: '20px',
                   color: 'var(--primary-green)'
                 }}>
                   <Trophy size={28} />
                 </div>
+                <div style={{
+                  display: 'inline-block',
+                  fontSize: '0.8rem',
+                  fontWeight: 800,
+                  color: 'var(--primary-green)',
+                  background: 'rgba(0, 209, 108, 0.1)',
+                  padding: '2px 10px',
+                  borderRadius: '20px',
+                  marginBottom: '10px'
+                }}>
+                  PATH A
+                </div>
                 <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '12px', color: 'var(--text-primary)' }}>
-                  For Players
+                  I'm a player
                 </h3>
                 <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6', fontSize: '1rem' }}>
-                  Create a permanent, verifiable football profile. Showcase your highlights, technical metrics, and CV without geographic barriers.
+                  Create your professional football profile, Upload highlights, Get discovered by scouts and clubs.
                 </p>
               </div>
-              <div style={{ marginTop: '24px', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--primary-green)', fontWeight: 600, fontSize: '0.9rem' }}>
-                <CheckCircle2 size={16} /> Global visibility & trials
+              <div style={{ marginTop: '24px' }}>
+                <Link to="/register" className="btn-primary" style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '10px 20px',
+                  fontSize: '0.9rem',
+                  textDecoration: 'none',
+                  borderRadius: '50px'
+                }}>
+                  Join as Player <ChevronRight size={16} />
+                </Link>
               </div>
             </div>
 
-            {/* For Clubs */}
+            {/* B. I'm a scout */}
             <div className="glass" style={{
               padding: '36px',
               borderRadius: '20px',
@@ -164,24 +195,46 @@ export default function LandingPage() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  marginBottom: '24px',
+                  marginBottom: '20px',
                   color: 'var(--secondary-orange)'
                 }}>
                   <Compass size={28} />
                 </div>
+                <div style={{
+                  display: 'inline-block',
+                  fontSize: '0.8rem',
+                  fontWeight: 800,
+                  color: 'var(--secondary-orange)',
+                  background: 'rgba(249, 115, 22, 0.1)',
+                  padding: '2px 10px',
+                  borderRadius: '20px',
+                  marginBottom: '10px'
+                }}>
+                  PATH B
+                </div>
                 <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '12px', color: 'var(--text-primary)' }}>
-                  For Clubs
+                  I'm a scout
                 </h3>
                 <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6', fontSize: '1rem' }}>
-                  Slash scouting overhead and discover verified talents faster. Filter players across positions, regions, and physical attributes with video evidence.
+                  Search talent for talent, filter players, review profile and scout.
                 </p>
               </div>
-              <div style={{ marginTop: '24px', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--secondary-orange)', fontWeight: 600, fontSize: '0.9rem' }}>
-                <CheckCircle2 size={16} /> Verified stats & video analysis
+              <div style={{ marginTop: '24px' }}>
+                <Link to="/search" className="btn-secondary" style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '10px 20px',
+                  fontSize: '0.9rem',
+                  textDecoration: 'none',
+                  borderRadius: '50px'
+                }}>
+                  Search Talent <ChevronRight size={16} />
+                </Link>
               </div>
             </div>
 
-            {/* For Scouts & Agents */}
+            {/* C. I'm a club */}
             <div className="glass" style={{
               padding: '36px',
               borderRadius: '20px',
@@ -199,20 +252,42 @@ export default function LandingPage() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  marginBottom: '24px',
+                  marginBottom: '20px',
                   color: 'var(--primary-green)'
                 }}>
                   <ShieldCheck size={28} />
                 </div>
+                <div style={{
+                  display: 'inline-block',
+                  fontSize: '0.8rem',
+                  fontWeight: 800,
+                  color: 'var(--primary-green)',
+                  background: 'rgba(0, 209, 108, 0.1)',
+                  padding: '2px 10px',
+                  borderRadius: '20px',
+                  marginBottom: '10px'
+                }}>
+                  PATH C
+                </div>
                 <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '12px', color: 'var(--text-primary)' }}>
-                  For Scouts & Agents
+                  I'm a club
                 </h3>
                 <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6', fontSize: '1rem' }}>
-                  Access powerful discovery and evaluation tools. Identify hidden gems, track player career progress, and initiate direct professional contact.
+                  Discovered promising players, Build shortlists and  Connect with the next generation of talent.
                 </p>
               </div>
-              <div style={{ marginTop: '24px', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--primary-green)', fontWeight: 600, fontSize: '0.9rem' }}>
-                <CheckCircle2 size={16} /> First access to rising talent
+              <div style={{ marginTop: '24px' }}>
+                <Link to="/search" className="btn-secondary" style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '10px 20px',
+                  fontSize: '0.9rem',
+                  textDecoration: 'none',
+                  borderRadius: '50px'
+                }}>
+                  Discover Talent <ChevronRight size={16} />
+                </Link>
               </div>
             </div>
           </div>

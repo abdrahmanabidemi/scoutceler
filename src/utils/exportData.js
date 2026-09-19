@@ -36,7 +36,7 @@ export const exportPlayerToCsv = (profile) => {
   const safe = (val) => `"${String(val ?? '').replace(/"/g, '""')}"`;
   
   const headers = [
-    'Full Name', 'Nickname', 'Gender', 'Nationality', 'Location', 'Age', 
+    'Player Code', 'Full Name', 'Nickname', 'Gender', 'Nationality', 'Location', 'Age', 
     'Height (cm)', 'Weight (kg)', 'Primary Position', 'Secondary Position', 
     'Preferred Foot', 'Current Club', 'Previous Clubs', 'Academy', 'Jersey Number',
     'Market Value', 'Verification Tier', 'Scout Rating', 'Scout Confidence',
@@ -47,6 +47,7 @@ export const exportPlayerToCsv = (profile) => {
   ];
 
   const values = [
+    safe(profile.playerCode || ''),
     safe(profile.fullName),
     safe(profile.nickname),
     safe(profile.gender),
@@ -186,6 +187,7 @@ export const printPlayerCv = (profile) => {
           ${profile.nickname ? `<div class="title-nickname">"${profile.nickname}"</div>` : ''}
           
           <div class="quick-meta">
+            ${profile.playerCode ? `<span class="meta-tag" style="background: #e6fcf1; color: #00a854; border-color: #00d16c; font-weight: 700;">Code: ${profile.playerCode}</span>` : ''}
             <span class="meta-tag">Position: ${profile.primaryPosition || 'Forward'}</span>
             <span class="meta-tag">Club: ${profile.currentClub || 'Free Agent'}</span>
             <span class="meta-tag">Market Value: €${profile.marketValue || 'N/A'}</span>

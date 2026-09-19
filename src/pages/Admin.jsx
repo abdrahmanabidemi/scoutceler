@@ -12,6 +12,7 @@ export default function Admin() {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [actionMessage, setActionMessage] = useState('');
   const [showSettings, setShowSettings] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -222,10 +223,20 @@ export default function Admin() {
 
       {/* User Management Directory */}
       <div className="glass" style={{ borderRadius: '16px', overflow: 'hidden', border: '1px solid var(--border-color)' }}>
-        <div style={{ padding: '24px 30px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+        <div style={{ padding: '20px 30px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
           <div>
             <h3 style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>Player Management</h3>
             <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Click player name for confidential details • Select dropdown to upgrade verification</span>
+          </div>
+          <div style={{ width: '100%', maxWidth: '320px' }}>
+            <input
+              type="text"
+              className="form-input"
+              style={{ width: '100%', padding: '8px 14px', fontSize: '0.88rem' }}
+              placeholder="Search by code (e.g. SC-10001) or name..."
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+            />
           </div>
         </div>
 
@@ -233,7 +244,7 @@ export default function Admin() {
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '800px' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid var(--border-color)', background: 'rgba(255,255,255,0.01)' }}>
-                <th style={{ padding: '16px 30px', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Name / Club</th>
+                <th style={{ padding: '16px 30px', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Name & Code / Club</th>
                 <th style={{ padding: '16px 30px', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Nationality</th>
                 <th style={{ padding: '16px 30px', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Position</th>
                 <th style={{ padding: '16px 30px', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Rating (OVR)</th>
@@ -242,11 +253,23 @@ export default function Admin() {
               </tr>
             </thead>
             <tbody>
-              {profiles.map((p) => (
+              {profiles
+                .filter(p => {
+                  if (!searchQuery.trim()) return true;
+                  const q = searchQuery.toLowerCase().trim();
+                  return (
+                    (p.fullName && p.fullName.toLowerCase().includes(q)) ||
+                    (p.playerCode && p.playerCode.toLowerCase().includes(q)) ||
+                    (p.email && p.email.toLowerCase().includes(q)) ||
+                    (p.phone && p.phone.toLowerCase().includes(q)) ||
+                    (p.currentClub && p.currentClub.toLowerCase().includes(q))
+                  );
+                })
+                .map((p) => (
                 <tr key={p.uid} style={{ borderBottom: '1px solid var(--border-color)' }}>
                   <td style={{ padding: '20px 30px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                      <div style={{ width: '40px', height: '40px', borderRadius: '50%', overflow: 'hidden', background: '#222' }}>
+                      <div style={{ width: '40px', height: '40px', borderRadius: '50%', overflow: 'hidden', background: '#222', flexShrink: 0 }}>
                         {p.profilePic ? (
                           <img src={p.profilePic} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         ) : (
@@ -254,28 +277,43 @@ export default function Admin() {
                         )}
                       </div>
                       <div>
-                        <button
-                          type="button"
-                          onClick={() => setSelectedPlayer(p)}
-                          style={{
-                            background: 'none',
-                            border: 'none',
-                            padding: 0,
-                            margin: 0,
-                            color: 'var(--primary-green)',
-                            fontSize: '0.95rem',
-                            fontWeight: 700,
-                            cursor: 'pointer',
-                            textAlign: 'left',
-                            display: 'inline-block',
-                            textDecoration: 'underline',
-                            textUnderlineOffset: '3px',
-                            transition: 'opacity 0.2s'
-                          }}
-                          title="Click to view confidential player details (Admin Only)"
-                        >
-                          {p.fullName}
-                        </button>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                          <button
+                            type="button"
+                            onClick={() => setSelectedPlayer(p)}
+                            style={{
+                              background: 'none',
+                              border: 'none',
+                              padding: 0,
+                              margin: 0,
+                              color: 'var(--primary-green)',
+                              fontSize: '0.95rem',
+                              fontWeight: 700,
+                              cursor: 'pointer',
+                              textAlign: 'left',
+                              display: 'inline-block',
+                              textDecoration: 'underline',
+                              textUnderlineOffset: '3px',
+                              transition: 'opacity 0.2s'
+                            }}
+                            title="Click to view confidential player details (Admin Only)"
+                          >
+                            {p.fullName}
+                          </button>
+                          {p.playerCode && (
+                            <span style={{
+                              fontSize: '0.72rem',
+                              fontWeight: 700,
+                              color: 'var(--primary-green)',
+                              background: 'rgba(0, 209, 108, 0.1)',
+                              border: '1px solid rgba(0, 209, 108, 0.25)',
+                              padding: '1px 6px',
+                              borderRadius: '4px'
+                            }}>
+                              {p.playerCode}
+                            </span>
+                          )}
+                        </div>
                         <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)' }}>{p.currentClub || 'No Club'}</span>
                       </div>
                     </div>
@@ -402,9 +440,24 @@ export default function Admin() {
                       </span>
                     )}
                   </div>
-                  <span style={{ fontSize: '0.8rem', color: '#ea580c', fontWeight: 700, letterSpacing: '0.5px' }}>
-                    CONFIDENTIAL ADMIN RECORD (PLAYER ID: {selectedPlayer.uid})
-                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px', flexWrap: 'wrap' }}>
+                    {selectedPlayer.playerCode && (
+                      <span style={{
+                        fontSize: '0.75rem',
+                        fontWeight: 700,
+                        color: 'var(--primary-green)',
+                        background: 'rgba(0, 209, 108, 0.12)',
+                        border: '1px solid rgba(0, 209, 108, 0.3)',
+                        padding: '1px 8px',
+                        borderRadius: '4px'
+                      }}>
+                        Code: {selectedPlayer.playerCode}
+                      </span>
+                    )}
+                    <span style={{ fontSize: '0.8rem', color: '#ea580c', fontWeight: 700, letterSpacing: '0.5px' }}>
+                      CONFIDENTIAL ADMIN RECORD (PLAYER ID: {selectedPlayer.uid})
+                    </span>
+                  </div>
                 </div>
               </div>
               <button

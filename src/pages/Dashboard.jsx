@@ -256,6 +256,20 @@ export default function Dashboard() {
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
             <h1 style={{ fontSize: 'clamp(1.75rem, 4vw, 2.4rem)', fontWeight: 800 }}>Edit Player Profile</h1>
+            {(profile.playerCode || user?.playerCode) && (
+              <span style={{
+                color: 'var(--primary-green)',
+                background: 'rgba(0, 209, 108, 0.12)',
+                border: '1px solid rgba(0, 209, 108, 0.3)',
+                padding: '4px 12px',
+                borderRadius: '8px',
+                fontSize: '0.85rem',
+                fontWeight: 700,
+                letterSpacing: '0.4px'
+              }}>
+                Code: {profile.playerCode || user?.playerCode}
+              </span>
+            )}
             {profile.verification && profile.verification !== 'none' && (
               <span className="glass" style={{
                 color: profile.verification === 'Elite' ? 'var(--secondary-orange)' : 'var(--primary-green)',

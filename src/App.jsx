@@ -90,25 +90,25 @@ function Navigation() {
     }}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         {currentUser ? (
-          <Link to={getDashboardPath()} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }} title="Go to Dashboard">
+          <Link to={getDashboardPath()} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '14px' }} title="Go to Dashboard">
             <img 
               src="/logo.jpg" 
               alt="Scoutceler Logo" 
               style={{ 
-                height: 'clamp(38px, 5vw, 54px)', 
+                height: 'clamp(52px, 6.5vw, 68px)', 
                 objectFit: 'contain',
-                filter: 'invert(1) hue-rotate(180deg)',
+                filter: 'invert(1) hue-rotate(180deg) contrast(1.15)',
                 mixBlendMode: 'multiply'
               }} 
             />
             <span style={{
-              fontSize: '1rem',
-              fontWeight: 700,
+              fontSize: '1.05rem',
+              fontWeight: 800,
               color: 'var(--text-primary)',
-              padding: '4px 10px',
+              padding: '6px 14px',
               borderRadius: '8px',
-              background: 'rgba(0, 209, 108, 0.08)',
-              border: '1px solid rgba(0, 209, 108, 0.2)',
+              background: 'rgba(0, 209, 108, 0.1)',
+              border: '1.5px solid rgba(0, 209, 108, 0.3)',
               letterSpacing: '-0.2px'
             }}>
               Dashboard
@@ -120,9 +120,9 @@ function Navigation() {
               src="/logo.jpg" 
               alt="Scoutceler Logo" 
               style={{ 
-                height: 'clamp(38px, 5vw, 54px)', 
+                height: 'clamp(52px, 6.5vw, 68px)', 
                 objectFit: 'contain',
-                filter: 'invert(1) hue-rotate(180deg)',
+                filter: 'invert(1) hue-rotate(180deg) contrast(1.15)',
                 mixBlendMode: 'multiply'
               }} 
             />

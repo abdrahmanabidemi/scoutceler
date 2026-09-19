@@ -164,6 +164,22 @@ export default function PlayerProfile() {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
               <h1 style={{ fontSize: 'clamp(1.8rem, 4.5vw, 3rem)', fontWeight: 800 }}>{profile.fullName}</h1>
+              {profile.playerCode && (
+                <span style={{
+                  background: 'rgba(0, 209, 108, 0.12)',
+                  border: '1.5px solid rgba(0, 209, 108, 0.35)',
+                  color: 'var(--primary-green)',
+                  padding: '6px 14px',
+                  borderRadius: '8px',
+                  fontSize: '0.9rem',
+                  fontWeight: 700,
+                  letterSpacing: '0.5px',
+                  display: 'inline-flex',
+                  alignItems: 'center'
+                }}>
+                  Player Code: {profile.playerCode}
+                </span>
+              )}
               {profile.verification && profile.verification !== 'none' && (
                 <span className="glow-btn" style={{
                   background: profile.verification === 'Elite' ? 'var(--secondary-orange)' : 'var(--primary-green)',

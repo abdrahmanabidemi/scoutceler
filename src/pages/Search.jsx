@@ -34,12 +34,13 @@ export default function Search() {
   useEffect(() => {
     let result = [...profiles];
 
-    // Search query match (name, nickname, club)
+    // Search query match (name, nickname, club, playerCode)
     if (searchQuery.trim() !== '') {
-      const q = searchQuery.toLowerCase();
+      const q = searchQuery.toLowerCase().trim();
       result = result.filter(p => 
         (p.fullName && p.fullName.toLowerCase().includes(q)) || 
         (p.nickname && p.nickname.toLowerCase().includes(q)) ||
+        (p.playerCode && p.playerCode.toLowerCase().includes(q)) ||
         (p.currentClub && p.currentClub.toLowerCase().includes(q))
       );
     }
@@ -153,7 +154,7 @@ export default function Search() {
               type="text"
               className="form-input"
               style={{ width: '100%', paddingLeft: '40px' }}
-              placeholder="Name, nickname..."
+              placeholder="Name, player code (e.g. SC-10001)..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
             />
@@ -310,9 +311,25 @@ export default function Search() {
               {/* Card Body */}
               <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 <div>
-                  <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '4px', color: 'var(--text-primary)' }}>
-                    {player.fullName}
-                  </h3>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', marginBottom: '4px', flexWrap: 'wrap' }}>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', margin: 0, color: 'var(--text-primary)' }}>
+                      {player.fullName}
+                    </h3>
+                    {player.playerCode && (
+                      <span style={{
+                        fontSize: '0.72rem',
+                        fontWeight: 700,
+                        color: 'var(--primary-green)',
+                        background: 'rgba(0, 209, 108, 0.1)',
+                        border: '1px solid rgba(0, 209, 108, 0.25)',
+                        padding: '2px 8px',
+                        borderRadius: '6px',
+                        letterSpacing: '0.4px'
+                      }}>
+                        {player.playerCode}
+                      </span>
+                    )}
+                  </div>
                   {player.nickname && (
                     <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '8px' }}>
                       "{player.nickname}"

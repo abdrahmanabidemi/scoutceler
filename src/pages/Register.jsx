@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { auth } from '../firebase';
-import { User, Mail, Lock, Sparkles, Eye, EyeOff } from 'lucide-react';
+import { User, Mail, Lock, Sparkles, Eye, EyeOff, Phone } from 'lucide-react';
 
 export default function Register() {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [role, setRole] = useState('player');
@@ -16,9 +17,13 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    if (!phone.trim()) {
+      setError('Please provide a valid phone number.');
+      return;
+    }
     setLoading(true);
     try {
-      await auth.signUp(email, password, role, fullName);
+      await auth.signUp(email, password, role, fullName, phone);
       if (role === 'player') {
         navigate('/dashboard');
       } else {
@@ -94,6 +99,24 @@ export default function Register() {
                 style={{ width: '100%', paddingLeft: '48px' }}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                placeholder="e.g. player@example.com"
+              />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label" htmlFor="phone">Phone Number</label>
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+              <Phone size={18} color="var(--text-muted)" style={{ position: 'absolute', left: '16px' }} />
+              <input
+                id="phone"
+                type="tel"
+                required
+                className="form-input"
+                style={{ width: '100%', paddingLeft: '48px' }}
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="e.g. +234 803 123 4567"
               />
             </div>
           </div>

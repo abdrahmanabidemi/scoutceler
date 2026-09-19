@@ -27,6 +27,39 @@ const setLocalData = (key, data) => {
   }
 };
 
+// Helper: Generate unique 5-digit combined player code
+const generatePlayerCode = () => {
+  return `SC-${Math.floor(10000 + Math.random() * 90000)}`;
+};
+
+// Helper: Normalize phone digits for resilient matching
+const normalizePhone = (phone) => String(phone || '').replace(/\D/g, '');
+
+// Helper: Check if identifier matches user's email or phone number
+const matchesIdentifier = (user, identifier) => {
+  if (!user || !identifier) return false;
+  const input = identifier.trim().toLowerCase();
+  const inputDigits = normalizePhone(identifier);
+
+  // Email match
+  if (user.email && user.email.toLowerCase() === input) {
+    return true;
+  }
+
+  // Phone match
+  if (user.phone) {
+    if (user.phone.trim() === identifier.trim()) return true;
+    const userDigits = normalizePhone(user.phone);
+    if (inputDigits.length >= 7 && userDigits.length >= 7) {
+      if (userDigits === inputDigits || userDigits.endsWith(inputDigits) || inputDigits.endsWith(userDigits)) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+};
+
 // Seed mock database if empty
 const seedDatabase = () => {
   const existingProfiles = getLocalData(STORAGE_KEYS.PROFILES, null);
@@ -34,6 +67,7 @@ const seedDatabase = () => {
     const mockProfiles = [
       {
         uid: 'p1',
+        playerCode: 'SC-10001',
         email: 'mbappe@scoutceler.com',
         phone: '+33 6 12 34 56 78',
         fullName: 'Kylian Mbappé',
@@ -80,6 +114,7 @@ const seedDatabase = () => {
       },
       {
         uid: 'p2',
+        playerCode: 'SC-10002',
         email: 'bukayo@scoutceler.com',
         phone: '+44 7911 123456',
         fullName: 'Bukayo Saka',
@@ -126,6 +161,7 @@ const seedDatabase = () => {
       },
       {
         uid: 'p3',
+        playerCode: 'SC-10003',
         email: 'junior@scoutceler.com',
         phone: '+234 803 123 4567',
         fullName: 'Sunday Junior',
@@ -176,36 +212,61 @@ const seedDatabase = () => {
     ];
 
     const mockUsers = [
-      { uid: 'admin1', email: 'admin@scoutceler.com', password: 'password', role: 'admin', fullName: 'Scoutceler Admin' },
-      { uid: 'scout1', email: 'scout@scoutceler.com', password: 'password', role: 'scout', fullName: 'John Scout' },
-      { uid: 'p1', email: 'mbappe@scoutceler.com', password: 'password', role: 'player', fullName: 'Kylian Mbappé' },
-      { uid: 'p2', email: 'bukayo@scoutceler.com', password: 'password', role: 'player', fullName: 'Bukayo Saka' },
-      { uid: 'p3', email: 'junior@scoutceler.com', password: 'password', role: 'player', fullName: 'Sunday Junior' }
+      { uid: 'admin1', email: 'admin@scoutceler.com', phone: '+1 800 555 0199', password: 'password', role: 'admin', fullName: 'Scoutceler Admin' },
+      { uid: 'scout1', email: 'scout@scoutceler.com', phone: '+44 20 7946 0991', password: 'password', role: 'scout', fullName: 'John Scout' },
+      { uid: 'p1', email: 'mbappe@scoutceler.com', phone: '+33 6 12 34 56 78', playerCode: 'SC-10001', password: 'password', role: 'player', fullName: 'Kylian Mbappé' },
+      { uid: 'p2', email: 'bukayo@scoutceler.com', phone: '+44 7911 123456', playerCode: 'SC-10002', password: 'password', role: 'player', fullName: 'Bukayo Saka' },
+      { uid: 'p3', email: 'junior@scoutceler.com', phone: '+234 803 123 4567', playerCode: 'SC-10003', password: 'password', role: 'player', fullName: 'Sunday Junior' }
     ];
 
     setLocalData(STORAGE_KEYS.PROFILES, mockProfiles);
     setLocalData(STORAGE_KEYS.USERS, mockUsers);
   } else {
-    let changed = false;
+    let profilesChanged = false;
     const phoneMap = {
       p1: '+33 6 12 34 56 78',
       p2: '+44 7911 123456',
       p3: '+234 803 123 4567'
     };
-    existingProfiles.forEach(p => {
+    const codeMap = {
+      p1: 'SC-10001',
+      p2: 'SC-10002',
+      p3: 'SC-10003'
+    };
+    existingProfiles.forEach((p, idx) => {
       if (!p.phone && phoneMap[p.uid]) {
         p.phone = phoneMap[p.uid];
-        changed = true;
+        profilesChanged = true;
+      }
+      if (!p.playerCode) {
+        p.playerCode = codeMap[p.uid] || `SC-${10000 + idx + 1}`;
+        profilesChanged = true;
       }
       // Reset fake pre-seeded views to 0 until actual views happen
       if (p.views && p.views.some(v => ['v1', 'v2', 'v3', 'v4', 'v5'].includes(v.id))) {
         p.views = p.views.filter(v => !['v1', 'v2', 'v3', 'v4', 'v5'].includes(v.id));
         p.viewCount = p.views.length;
-        changed = true;
+        profilesChanged = true;
       }
     });
-    if (changed) {
+    if (profilesChanged) {
       setLocalData(STORAGE_KEYS.PROFILES, existingProfiles);
+    }
+
+    const existingUsers = getLocalData(STORAGE_KEYS.USERS, []);
+    let usersChanged = false;
+    existingUsers.forEach((u, idx) => {
+      if (!u.phone && phoneMap[u.uid]) {
+        u.phone = phoneMap[u.uid];
+        usersChanged = true;
+      }
+      if (u.role === 'player' && !u.playerCode) {
+        u.playerCode = codeMap[u.uid] || `SC-${10000 + idx + 1}`;
+        usersChanged = true;
+      }
+    });
+    if (usersChanged) {
+      setLocalData(STORAGE_KEYS.USERS, existingUsers);
     }
   }
 };
@@ -215,26 +276,45 @@ seedDatabase();
 // Auth Namespace
 export const auth = {
   // Sign Up
-  signUp: async (email, password, role, fullName) => {
+  signUp: async (email, password, role, fullName, phone = '') => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        const users = getLocalData(STORAGE_KEYS.USERS);
-        if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
-          return reject(new Error('Email already registered!'));
+        const users = getLocalData(STORAGE_KEYS.USERS, []);
+        const cleanEmail = (email || '').trim().toLowerCase();
+        const cleanPhone = (phone || '').trim();
+
+        if (users.find(u => u.email && u.email.toLowerCase() === cleanEmail)) {
+          return reject(new Error('Email is already registered!'));
+        }
+
+        if (cleanPhone) {
+          const phoneExists = users.find(u => {
+            if (!u.phone) return false;
+            return normalizePhone(u.phone) === normalizePhone(cleanPhone);
+          });
+          if (phoneExists) {
+            return reject(new Error('Phone number is already registered!'));
+          }
         }
 
         const uid = 'u_' + Math.random().toString(36).substr(2, 9);
-        const newUser = { uid, email, password, role, fullName };
+        let playerCode = null;
+        if (role === 'player') {
+          playerCode = generatePlayerCode();
+        }
+
+        const newUser = { uid, email: cleanEmail, phone: cleanPhone, password, role, fullName, playerCode };
         users.push(newUser);
         setLocalData(STORAGE_KEYS.USERS, users);
 
         // If player, create an empty profile
         if (role === 'player') {
-          const profiles = getLocalData(STORAGE_KEYS.PROFILES);
+          const profiles = getLocalData(STORAGE_KEYS.PROFILES, []);
           const newProfile = {
             uid,
-            email,
-            phone: '',
+            playerCode,
+            email: cleanEmail,
+            phone: cleanPhone,
             fullName,
             role: 'player',
             gender: 'Male', // Default gender
@@ -282,14 +362,14 @@ export const auth = {
     });
   },
 
-  // Login
-  login: async (email, password) => {
+  // Login (supports either Email or Phone Number)
+  login: async (identifier, password) => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        const users = getLocalData(STORAGE_KEYS.USERS);
-        const user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
+        const users = getLocalData(STORAGE_KEYS.USERS, []);
+        const user = users.find(u => matchesIdentifier(u, identifier) && u.password === password);
         if (!user) {
-          return reject(new Error('Invalid email or password!'));
+          return reject(new Error('Invalid email or phone number or password!'));
         }
         setLocalData(STORAGE_KEYS.CURRENT_USER, user);
         resolve(user);
@@ -307,14 +387,14 @@ export const auth = {
     });
   },
 
-  // Reset Password
-  resetPassword: async (email, newPassword) => {
+  // Reset Password (supports either Email or Phone Number)
+  resetPassword: async (identifier, newPassword) => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        const users = getLocalData(STORAGE_KEYS.USERS);
-        const index = users.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
+        const users = getLocalData(STORAGE_KEYS.USERS, []);
+        const index = users.findIndex(u => matchesIdentifier(u, identifier));
         if (index === -1) {
-          return reject(new Error('No account found with this email address.'));
+          return reject(new Error('No account found with this email or phone number.'));
         }
         users[index].password = newPassword;
         setLocalData(STORAGE_KEYS.USERS, users);
@@ -445,10 +525,14 @@ export const db = {
   getProfile: async (uid) => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        const profiles = getLocalData(STORAGE_KEYS.PROFILES);
+        const profiles = getLocalData(STORAGE_KEYS.PROFILES, []);
         const profile = profiles.find(p => p.uid === uid);
         if (!profile) {
           return reject(new Error('Profile not found!'));
+        }
+        if (!profile.playerCode && profile.role === 'player') {
+          profile.playerCode = generatePlayerCode();
+          setLocalData(STORAGE_KEYS.PROFILES, profiles);
         }
         resolve(profile);
       }, 200);
@@ -459,7 +543,17 @@ export const db = {
   getAllProfiles: async () => {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const profiles = getLocalData(STORAGE_KEYS.PROFILES);
+        const profiles = getLocalData(STORAGE_KEYS.PROFILES, []);
+        let changed = false;
+        profiles.forEach((p, idx) => {
+          if (!p.playerCode && p.role === 'player') {
+            p.playerCode = `SC-${10000 + idx + 1}`;
+            changed = true;
+          }
+        });
+        if (changed) {
+          setLocalData(STORAGE_KEYS.PROFILES, profiles);
+        }
         resolve(profiles);
       }, 300);
     });

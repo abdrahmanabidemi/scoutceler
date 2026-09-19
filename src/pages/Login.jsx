@@ -4,7 +4,7 @@ import { auth } from '../firebase';
 import { ShieldCheck, Mail, Lock, Eye, EyeOff, KeyRound, CheckCircle } from 'lucide-react';
 
 export default function Login() {
-  const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
@@ -13,7 +13,7 @@ export default function Login() {
 
   // Forgot Password State
   const [showForgotModal, setShowForgotModal] = useState(false);
-  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotIdentifier, setForgotIdentifier] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [forgotMsg, setForgotMsg] = useState('');
   const [forgotError, setForgotError] = useState('');
@@ -25,7 +25,7 @@ export default function Login() {
     setForgotMsg('');
     setForgotLoading(true);
     try {
-      await auth.resetPassword(forgotEmail, newPassword);
+      await auth.resetPassword(forgotIdentifier, newPassword);
       setForgotMsg('Password updated successfully! You can now sign in with your new password.');
       setPassword(newPassword);
     } catch (err) {
@@ -40,7 +40,7 @@ export default function Login() {
     setError('');
     setLoading(true);
     try {
-      const user = await auth.login(email, password);
+      const user = await auth.login(identifier, password);
       if (user.role === 'admin') {
         navigate('/admin');
       } else if (user.role === 'player') {
@@ -91,17 +91,18 @@ export default function Login() {
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <div className="form-group">
-            <label className="form-label" htmlFor="email">Email Address</label>
+            <label className="form-label" htmlFor="identifier">Email Address or Phone Number</label>
             <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
               <Mail size={18} color="var(--text-muted)" style={{ position: 'absolute', left: '16px' }} />
               <input
-                id="email"
-                type="email"
+                id="identifier"
+                type="text"
                 required
                 className="form-input"
                 style={{ width: '100%', paddingLeft: '48px' }}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter email or phone number"
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
               />
             </div>
           </div>
@@ -113,7 +114,7 @@ export default function Login() {
                 type="button"
                 onClick={() => {
                   setShowForgotModal(true);
-                  setForgotEmail(email);
+                  setForgotIdentifier(identifier);
                   setNewPassword('');
                   setForgotMsg('');
                   setForgotError('');
@@ -258,14 +259,14 @@ export default function Login() {
 
               <form onSubmit={handleResetPassword} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 <div className="form-group" style={{ marginBottom: 0 }}>
-                  <label className="form-label">Account Email</label>
+                  <label className="form-label">Account Email or Phone Number</label>
                   <input
-                    type="email"
+                    type="text"
                     required
                     className="form-input"
-                    placeholder="Enter registered email"
-                    value={forgotEmail}
-                    onChange={(e) => setForgotEmail(e.target.value)}
+                    placeholder="Enter registered email or phone number"
+                    value={forgotIdentifier}
+                    onChange={(e) => setForgotIdentifier(e.target.value)}
                   />
                 </div>
 
