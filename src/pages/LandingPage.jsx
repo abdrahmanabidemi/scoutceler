@@ -11,32 +11,26 @@ export default function LandingPage() {
 
   const faqs = [
     {
-      num: "1",
       q: "What is Scoutceler?",
       a: "Scoutceler is a football platform that helps players create profiles, showcase their skills, and get discovered by scouts, agents, clubs, and football professionals."
     },
     {
-      num: "2",
       q: "Who can use Scoutceler?",
       a: "Scoutceler is for male and female football players, scouts, agents, managers, and clubs."
     },
     {
-      num: "3",
       q: "How does Scoutceler work?",
       a: "Players create a profile, add their football information and upload videos showing their skills. Scouts and football professionals can discover players through the platform."
     },
     {
-      num: "5",
       q: "Can scouts find my profile?",
       a: "Yes. Your profile is designed to help scouts, agents, clubs, and other football professionals discover your talent."
     },
     {
-      num: "6",
       q: "Do I need to be a professional footballer?",
       a: "No. Scoutceler is designed to give both emerging and established players an opportunity to showcase their talent."
     },
     {
-      num: "12",
       q: "Is Scoutceler free to use?",
       a: "The availability of free and paid features may depend on the current Scoutceler plan. Check the platform for the latest options."
     }
@@ -646,7 +640,7 @@ export default function LandingPage() {
               const isOpen = openFaq === index;
               return (
                 <div
-                  key={faq.num}
+                  key={index}
                   className="glass"
                   style={{
                     borderRadius: '16px',
@@ -673,32 +667,14 @@ export default function LandingPage() {
                       gap: '16px'
                     }}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                      <span style={{
-                        fontSize: '0.82rem',
-                        fontWeight: 800,
-                        color: isOpen ? '#ffffff' : 'var(--primary-green)',
-                        background: isOpen ? 'var(--primary-green)' : 'rgba(0, 209, 108, 0.12)',
-                        width: '28px',
-                        height: '28px',
-                        borderRadius: '50%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexShrink: 0,
-                        transition: 'all 0.2s'
-                      }}>
-                        {faq.num}
-                      </span>
-                      <span style={{
-                        fontSize: 'clamp(1rem, 2vw, 1.12rem)',
-                        fontWeight: 700,
-                        color: isOpen ? 'var(--primary-green)' : 'var(--text-primary)',
-                        transition: 'color 0.2s'
-                      }}>
-                        {faq.q}
-                      </span>
-                    </div>
+                    <span style={{
+                      fontSize: 'clamp(1.02rem, 2vw, 1.15rem)',
+                      fontWeight: 700,
+                      color: isOpen ? 'var(--primary-green)' : 'var(--text-primary)',
+                      transition: 'color 0.2s'
+                    }}>
+                      {faq.q}
+                    </span>
                     <div style={{
                       transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
                       transition: 'transform 0.25s ease',
@@ -713,7 +689,7 @@ export default function LandingPage() {
                   </button>
                   {isOpen && (
                     <div style={{
-                      padding: '0 26px 22px 68px',
+                      padding: '0 26px 22px 26px',
                       color: 'var(--text-secondary)',
                       fontSize: '1rem',
                       lineHeight: '1.7',
