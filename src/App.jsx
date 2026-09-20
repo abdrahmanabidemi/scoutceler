@@ -8,6 +8,8 @@ import Dashboard from './pages/Dashboard';
 import Search from './pages/Search';
 import PlayerProfile from './pages/PlayerProfile';
 import Admin from './pages/Admin';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
 import { 
   Search as SearchIcon,
   LogOut, 
@@ -95,7 +97,7 @@ function Navigation() {
               src="/logo.jpg" 
               alt="Scoutceler Logo" 
               style={{ 
-                height: 'clamp(52px, 6.5vw, 68px)', 
+                height: 'clamp(70px, 9vw, 95px)', 
                 objectFit: 'contain',
                 filter: 'invert(1) hue-rotate(180deg) contrast(1.15)',
                 mixBlendMode: 'multiply'
@@ -120,7 +122,7 @@ function Navigation() {
               src="/logo.jpg" 
               alt="Scoutceler Logo" 
               style={{ 
-                height: 'clamp(52px, 6.5vw, 68px)', 
+                height: 'clamp(70px, 9vw, 95px)', 
                 objectFit: 'contain',
                 filter: 'invert(1) hue-rotate(180deg) contrast(1.15)',
                 mixBlendMode: 'multiply'
@@ -213,10 +215,10 @@ function Footer() {
           <h4 style={{ fontWeight: 700, fontSize: '1rem', marginBottom: '18px', color: '#ffffff', letterSpacing: '0.5px' }}>Legal</h4>
           <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '0.9rem' }}>
             <li>
-              <a href="#/privacy" style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }}>Privacy Policy</a>
+              <Link to="/privacy" style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }}>Privacy Policy</Link>
             </li>
             <li>
-              <a href="#/terms" style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }}>Terms of Service</a>
+              <Link to="/terms" style={{ color: '#94a3b8', textDecoration: 'none', transition: 'color 0.2s' }}>Terms of Service</Link>
             </li>
           </ul>
         </div>
@@ -271,9 +273,18 @@ function Footer() {
   );
 }
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
+
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Navigation />
         <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
@@ -285,6 +296,8 @@ function App() {
             <Route path="/search" element={<Search />} />
             <Route path="/player/:id" element={<PlayerProfile />} />
             <Route path="/admin" element={<Admin />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsOfService />} />
           </Routes>
         </main>
         <Footer />

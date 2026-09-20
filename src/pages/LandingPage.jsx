@@ -1,21 +1,63 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ShieldCheck, Trophy, Compass, Star, ChevronRight, CheckCircle2, Globe, Zap, Video } from 'lucide-react';
+import { ShieldCheck, Trophy, Compass, Star, ChevronRight, CheckCircle2, Globe, Zap, Video, ChevronDown, HelpCircle } from 'lucide-react';
 
 export default function LandingPage() {
+  const [openFaq, setOpenFaq] = useState(null);
+
+  const toggleFaq = (index) => {
+    setOpenFaq(openFaq === index ? null : index);
+  };
+
+  const faqs = [
+    {
+      num: "1",
+      q: "What is Scoutceler?",
+      a: "Scoutceler is a football platform that helps players create profiles, showcase their skills, and get discovered by scouts, agents, clubs, and football professionals."
+    },
+    {
+      num: "2",
+      q: "Who can use Scoutceler?",
+      a: "Scoutceler is for male and female football players, scouts, agents, managers, and clubs."
+    },
+    {
+      num: "3",
+      q: "How does Scoutceler work?",
+      a: "Players create a profile, add their football information and upload videos showing their skills. Scouts and football professionals can discover players through the platform."
+    },
+    {
+      num: "5",
+      q: "Can scouts find my profile?",
+      a: "Yes. Your profile is designed to help scouts, agents, clubs, and other football professionals discover your talent."
+    },
+    {
+      num: "6",
+      q: "Do I need to be a professional footballer?",
+      a: "No. Scoutceler is designed to give both emerging and established players an opportunity to showcase their talent."
+    },
+    {
+      num: "12",
+      q: "Is Scoutceler free to use?",
+      a: "The availability of free and paid features may depend on the current Scoutceler plan. Check the platform for the latest options."
+    }
+  ];
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-      {/* 1. HERO SECTION - Rounded, decent, soft stadium pitch aesthetic */}
+      {/* 1. HERO SECTION - With African footballer in action background */}
       <section style={{
         position: 'relative',
         maxWidth: '1220px',
         width: 'calc(100% - clamp(16px, 4vw, 32px))',
         margin: '16px auto 20px auto',
-        padding: 'clamp(44px, 7vw, 76px) clamp(16px, 4vw, 24px)',
+        padding: 'clamp(54px, 8vw, 88px) clamp(16px, 4vw, 24px)',
         borderRadius: 'clamp(20px, 4vw, 32px)',
-        background: 'linear-gradient(180deg, #13271d 0%, #193627 50%, #12241b 100%)',
-        border: '1px solid rgba(0, 209, 108, 0.25)',
-        boxShadow: '0 16px 36px -10px rgba(0, 0, 0, 0.12)',
+        backgroundImage: 'linear-gradient(180deg, rgba(8, 20, 14, 0.78) 0%, rgba(12, 30, 22, 0.86) 50%, rgba(8, 18, 13, 0.94) 100%), url("/hero-player.jpg")',
+        backgroundPosition: 'center 20%',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        border: '1px solid rgba(0, 209, 108, 0.3)',
+        boxShadow: '0 20px 45px -12px rgba(0, 0, 0, 0.35)',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -557,31 +599,203 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* 4. CALL TO ACTION SECTION */}
+      {/* 4. FREQUENTLY ASKED QUESTIONS (FAQ) SECTION */}
       <section style={{
         padding: '90px 24px',
         background: '#ffffff',
+        borderBottom: '1px solid var(--border-color)',
+        width: '100%'
+      }}>
+        <div style={{ maxWidth: '860px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '48px' }}>
+            <span style={{
+              display: 'inline-block',
+              fontSize: '0.8rem',
+              fontWeight: 800,
+              color: 'var(--primary-green)',
+              background: 'rgba(0, 209, 108, 0.1)',
+              padding: '4px 14px',
+              borderRadius: '20px',
+              marginBottom: '12px',
+              letterSpacing: '1px'
+            }}>
+              HELP & SUPPORT
+            </span>
+            <h2 style={{
+              fontSize: 'clamp(2rem, 4vw, 2.8rem)',
+              fontWeight: 800,
+              color: 'var(--text-primary)',
+              lineHeight: 1.25,
+              marginBottom: '12px'
+            }}>
+              Frequently Asked Questions
+            </h2>
+            <p style={{
+              fontSize: 'clamp(1rem, 1.8vw, 1.15rem)',
+              color: 'var(--text-secondary)',
+              maxWidth: '620px',
+              margin: '0 auto'
+            }}>
+              Everything you need to know about getting discovered, showcasing your talent, and connecting with scouts on Scoutceler.
+            </p>
+          </div>
+
+          {/* Accordion list */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {faqs.map((faq, index) => {
+              const isOpen = openFaq === index;
+              return (
+                <div
+                  key={faq.num}
+                  className="glass"
+                  style={{
+                    borderRadius: '16px',
+                    border: isOpen ? '1.5px solid var(--primary-green)' : '1px solid var(--border-color)',
+                    transition: 'all 0.25s ease',
+                    overflow: 'hidden',
+                    background: isOpen ? 'rgba(0, 209, 108, 0.02)' : 'var(--bg-card)',
+                    boxShadow: isOpen ? '0 8px 24px -6px rgba(0, 209, 108, 0.12)' : 'none'
+                  }}
+                >
+                  <button
+                    type="button"
+                    onClick={() => toggleFaq(index)}
+                    style={{
+                      width: '100%',
+                      padding: '22px 26px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      gap: '16px'
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                      <span style={{
+                        fontSize: '0.82rem',
+                        fontWeight: 800,
+                        color: isOpen ? '#ffffff' : 'var(--primary-green)',
+                        background: isOpen ? 'var(--primary-green)' : 'rgba(0, 209, 108, 0.12)',
+                        width: '28px',
+                        height: '28px',
+                        borderRadius: '50%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                        transition: 'all 0.2s'
+                      }}>
+                        {faq.num}
+                      </span>
+                      <span style={{
+                        fontSize: 'clamp(1rem, 2vw, 1.12rem)',
+                        fontWeight: 700,
+                        color: isOpen ? 'var(--primary-green)' : 'var(--text-primary)',
+                        transition: 'color 0.2s'
+                      }}>
+                        {faq.q}
+                      </span>
+                    </div>
+                    <div style={{
+                      transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                      transition: 'transform 0.25s ease',
+                      color: isOpen ? 'var(--primary-green)' : 'var(--text-muted)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0
+                    }}>
+                      <ChevronDown size={20} />
+                    </div>
+                  </button>
+                  {isOpen && (
+                    <div style={{
+                      padding: '0 26px 22px 68px',
+                      color: 'var(--text-secondary)',
+                      fontSize: '1rem',
+                      lineHeight: '1.7',
+                      animation: 'fadeIn 0.25s ease'
+                    }}>
+                      {faq.a}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* 5. CALL TO ACTION SECTION: One Platform. Endless Opportunities. */}
+      <section style={{
+        padding: '70px 24px 100px',
         width: '100%'
       }}>
         <div style={{
-          maxWidth: '1100px',
+          maxWidth: '1200px',
           margin: '0 auto',
-          padding: '60px 40px',
-          borderRadius: '24px',
+          padding: 'clamp(60px, 9vw, 90px) clamp(24px, 5vw, 56px)',
+          borderRadius: '32px',
           textAlign: 'center',
-          background: 'linear-gradient(135deg, rgba(0,209,108,0.06) 0%, rgba(249,115,22,0.06) 100%)',
-          border: '1px solid var(--border-color)',
-          boxShadow: '0 10px 30px -10px rgba(0, 0, 0, 0.06)'
+          position: 'relative',
+          overflow: 'hidden',
+          backgroundImage: 'linear-gradient(180deg, rgba(8, 20, 14, 0.82) 0%, rgba(12, 30, 21, 0.88) 50%, rgba(6, 16, 11, 0.95) 100%), url("/opportunities-players.jpg")',
+          backgroundPosition: 'center center',
+          backgroundSize: 'cover',
+          backgroundRepeat: 'no-repeat',
+          border: '1px solid rgba(0, 209, 108, 0.35)',
+          boxShadow: '0 25px 50px -15px rgba(0, 0, 0, 0.4)'
         }}>
-          <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 800, marginBottom: '16px' }} className="gradient-text">
-            One Platform. Endless Opportunities.
+          {/* Subtle glow */}
+          <div style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '650px',
+            height: '350px',
+            background: 'radial-gradient(ellipse at center, rgba(0, 209, 108, 0.25) 0%, transparent 70%)',
+            pointerEvents: 'none'
+          }} />
+
+          <h2 style={{
+            fontSize: 'clamp(2.2rem, 5vw, 3.4rem)',
+            fontWeight: 800,
+            marginBottom: '16px',
+            color: '#ffffff',
+            position: 'relative',
+            zIndex: 1,
+            letterSpacing: '-0.5px'
+          }}>
+            One Platform. <span style={{ color: 'var(--primary-green)' }}>Endless Opportunities.</span>
           </h2>
-          <p style={{ color: 'var(--text-secondary)', marginBottom: '32px', fontSize: '1.15rem', maxWidth: '650px', margin: '0 auto 32px' }}>
+          <p style={{
+            color: '#e2e8f0',
+            marginBottom: '36px',
+            fontSize: 'clamp(1.05rem, 2vw, 1.25rem)',
+            maxWidth: '680px',
+            margin: '0 auto 36px',
+            position: 'relative',
+            zIndex: 1,
+            lineHeight: 1.6
+          }}>
             Join the ecosystem today as a Player, Scout, or Club Representative.
           </p>
-          <Link to="/register" className="btn-orange" style={{ padding: '16px 44px', fontSize: '1.1rem', textDecoration: 'none' }}>
-            Create Your Account
-          </Link>
+          <div style={{ position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
+            <Link to="/register" className="btn-primary glow-btn" style={{
+              padding: '16px 42px',
+              fontSize: '1.1rem',
+              textDecoration: 'none',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              Create Your Account <ChevronRight size={20} />
+            </Link>
+          </div>
         </div>
       </section>
     </div>

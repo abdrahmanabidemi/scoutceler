@@ -24,7 +24,7 @@
   --text-muted: #94a3b8;
 
   /* Layout constants */
-  --header-height: 80px;
+  --header-height: 96px;
 
   color-scheme: light;
   background-color: var(--bg-dark);
@@ -259,7 +259,7 @@ body {
 /* Mobile Media Queries (<= 768px) */
 @media (max-width: 768px) {
   :root {
-    --header-height: 70px;
+    --header-height: 84px;
   }
 
   /* Navigation on mobile */
