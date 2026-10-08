@@ -46,11 +46,11 @@ export default function LandingPage() {
         margin: '16px auto 20px auto',
         padding: 'clamp(54px, 8vw, 88px) clamp(16px, 4vw, 24px)',
         borderRadius: 'clamp(20px, 4vw, 32px)',
-        backgroundImage: 'linear-gradient(180deg, rgba(8, 20, 14, 0.78) 0%, rgba(12, 30, 22, 0.86) 50%, rgba(8, 18, 13, 0.94) 100%), url("/hero-player.jpg")',
+        backgroundImage: 'linear-gradient(180deg, rgba(8, 20, 14, 0.35) 0%, rgba(10, 24, 18, 0.45) 50%, rgba(6, 16, 12, 0.65) 100%), url("/hero-player.jpg")',
         backgroundPosition: 'center 20%',
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
-        border: '1px solid rgba(0, 209, 108, 0.3)',
+        border: '1px solid rgba(0, 209, 108, 0.35)',
         boxShadow: '0 20px 45px -12px rgba(0, 0, 0, 0.35)',
         display: 'flex',
         flexDirection: 'column',
@@ -66,7 +66,7 @@ export default function LandingPage() {
           transform: 'translateX(-50%)',
           width: '800px',
           height: '400px',
-          background: 'radial-gradient(ellipse at 50% 30%, rgba(0, 209, 108, 0.22) 0%, rgba(249, 115, 22, 0.05) 45%, transparent 70%)',
+          background: 'radial-gradient(ellipse at 50% 30%, rgba(0, 209, 108, 0.28) 0%, rgba(249, 115, 22, 0.08) 45%, transparent 70%)',
           pointerEvents: 'none'
         }} />
 
@@ -78,6 +78,7 @@ export default function LandingPage() {
           marginBottom: '20px',
           letterSpacing: '-1px',
           color: '#ffffff',
+          textShadow: '0 2px 16px rgba(0, 0, 0, 0.95), 0 4px 30px rgba(0, 0, 0, 0.8)',
           position: 'relative',
           zIndex: 1
         }}>
@@ -86,10 +87,11 @@ export default function LandingPage() {
 
         <p style={{
           fontSize: 'clamp(1rem, 1.8vw, 1.25rem)',
-          color: '#cbd5e1',
+          color: '#f1f5f9',
           maxWidth: '780px',
           lineHeight: '1.65',
           marginBottom: '36px',
+          textShadow: '0 2px 12px rgba(0, 0, 0, 0.95), 0 3px 20px rgba(0, 0, 0, 0.8)',
           position: 'relative',
           zIndex: 1
         }}>
@@ -108,9 +110,10 @@ export default function LandingPage() {
             alignItems: 'center',
             justifyContent: 'center',
             borderRadius: '50px',
-            background: 'rgba(255, 255, 255, 0.1)',
+            background: 'rgba(255, 255, 255, 0.15)',
+            backdropFilter: 'blur(8px)',
             color: '#ffffff',
-            border: '1px solid rgba(255, 255, 255, 0.25)',
+            border: '1px solid rgba(255, 255, 255, 0.35)',
             fontWeight: 600,
             transition: 'all 0.2s ease'
           }}>
@@ -158,12 +161,13 @@ export default function LandingPage() {
           }}>
             {/* A. I'm a player */}
             <div className="glass" style={{
-              padding: '36px',
-              borderRadius: '20px',
+              padding: '36px 30px',
+              borderRadius: '16px',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
-              borderTop: '4px solid var(--primary-green)'
+              background: '#ffffff',
+              border: '1px solid var(--border-color)'
             }}>
               <div>
                 <div style={{
@@ -191,10 +195,10 @@ export default function LandingPage() {
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '6px',
-                  padding: '10px 20px',
+                  padding: '10px 22px',
                   fontSize: '0.9rem',
                   textDecoration: 'none',
-                  borderRadius: '50px'
+                  borderRadius: '10px'
                 }}>
                   Join as Player <ChevronRight size={16} />
                 </Link>
@@ -203,16 +207,17 @@ export default function LandingPage() {
 
             {/* B. I'm a scout */}
             <div className="glass" style={{
-              padding: '36px',
-              borderRadius: '20px',
+              padding: '36px 30px',
+              borderRadius: '16px',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
-              borderTop: '4px solid var(--secondary-orange)'
+              background: '#ffffff',
+              border: '1px solid var(--border-color)'
             }}>
               <div>
                 <div style={{
-                  background: 'rgba(249, 115, 22, 0.1)',
+                  background: 'rgba(0, 209, 108, 0.1)',
                   width: '56px',
                   height: '56px',
                   borderRadius: '14px',
@@ -220,7 +225,7 @@ export default function LandingPage() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   marginBottom: '20px',
-                  color: 'var(--secondary-orange)'
+                  color: 'var(--primary-green)'
                 }}>
                   <Compass size={28} />
                 </div>
@@ -236,10 +241,10 @@ export default function LandingPage() {
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '6px',
-                  padding: '10px 20px',
+                  padding: '10px 22px',
                   fontSize: '0.9rem',
                   textDecoration: 'none',
-                  borderRadius: '50px'
+                  borderRadius: '10px'
                 }}>
                   Search Talent <ChevronRight size={16} />
                 </Link>
@@ -248,12 +253,13 @@ export default function LandingPage() {
 
             {/* C. I'm a club */}
             <div className="glass" style={{
-              padding: '36px',
-              borderRadius: '20px',
+              padding: '36px 30px',
+              borderRadius: '16px',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
-              borderTop: '4px solid var(--primary-green)'
+              background: '#ffffff',
+              border: '1px solid var(--border-color)'
             }}>
               <div>
                 <div style={{
@@ -273,7 +279,7 @@ export default function LandingPage() {
                   I'm a club
                 </h3>
                 <p style={{ color: 'var(--text-secondary)', lineHeight: '1.6', fontSize: '1rem' }}>
-                  Discovered promising players, Build shortlists and  Connect with the next generation of talent.
+                  Discovered promising players, Build shortlists and Connect with the next generation of talent.
                 </p>
               </div>
               <div style={{ marginTop: '24px' }}>
@@ -281,10 +287,10 @@ export default function LandingPage() {
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '6px',
-                  padding: '10px 20px',
+                  padding: '10px 22px',
                   fontSize: '0.9rem',
                   textDecoration: 'none',
-                  borderRadius: '50px'
+                  borderRadius: '10px'
                 }}>
                   Discover Talent <ChevronRight size={16} />
                 </Link>
@@ -294,32 +300,19 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* 3. WHY SCOUTCELER SECTION - Distinct stadium dark styling with color interchange */}
+      {/* 3. WHY SCOUTCELER SECTION */}
       <section style={{
-        padding: '100px 24px',
-        background: 'linear-gradient(180deg, #07120c 0%, #0d1e15 50%, #08140d 100%)',
-        borderTop: '1px solid rgba(0, 209, 108, 0.25)',
-        borderBottom: '1px solid rgba(0, 209, 108, 0.25)',
+        padding: '90px 24px',
+        background: '#0a1710',
+        borderTop: '1px solid rgba(0, 209, 108, 0.2)',
+        borderBottom: '1px solid rgba(0, 209, 108, 0.2)',
         width: '100%',
-        position: 'relative',
-        overflow: 'hidden'
+        position: 'relative'
       }}>
-        {/* Subtle radial emerald illumination */}
-        <div style={{
-          position: 'absolute',
-          top: '-120px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: '700px',
-          height: '400px',
-          background: 'radial-gradient(circle, rgba(0, 209, 108, 0.14) 0%, transparent 70%)',
-          pointerEvents: 'none'
-        }} />
-
         <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
-          <div style={{ textAlign: 'center', marginBottom: '56px' }}>
+          <div style={{ textAlign: 'center', marginBottom: '48px' }}>
             <h2 style={{
-              fontSize: 'clamp(2.1rem, 4vw, 3rem)',
+              fontSize: 'clamp(2rem, 4vw, 2.6rem)',
               fontWeight: 800,
               color: '#ffffff',
               letterSpacing: '-0.5px'
@@ -329,11 +322,11 @@ export default function LandingPage() {
             <p style={{
               color: '#94a3b8',
               maxWidth: '620px',
-              margin: '14px auto 0',
-              fontSize: '1.05rem',
+              margin: '12px auto 0',
+              fontSize: '1rem',
               lineHeight: 1.6
             }}>
-              Four core pillars engineered specifically for the demands of modern football talent discovery and career acceleration.
+              Four core pillars engineered specifically for modern football talent discovery and recruitment.
             </p>
           </div>
 
@@ -342,57 +335,53 @@ export default function LandingPage() {
             gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 250px), 1fr))',
             gap: '24px'
           }}>
-            {/* Card 1: Green Accent (Discovery) */}
+            {/* Card 1: Discovery */}
             <div style={{
-              background: 'rgba(255, 255, 255, 0.04)',
-              border: '1px solid rgba(255, 255, 255, 0.09)',
-              borderRadius: '20px',
-              padding: '32px 28px',
+              background: 'rgba(255, 255, 255, 0.03)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              borderRadius: '16px',
+              padding: '30px 24px',
               display: 'flex',
               flexDirection: 'column',
-              justifyContent: 'space-between',
-              backdropFilter: 'blur(10px)',
-              position: 'relative'
+              justifyContent: 'space-between'
             }}>
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                   <div style={{
-                    width: '50px',
-                    height: '50px',
-                    borderRadius: '14px',
-                    background: 'rgba(0, 209, 108, 0.15)',
-                    border: '1px solid rgba(0, 209, 108, 0.3)',
+                    width: '46px',
+                    height: '46px',
+                    borderRadius: '12px',
+                    background: 'rgba(0, 209, 108, 0.12)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     color: 'var(--primary-green)'
                   }}>
-                    <Globe size={24} />
+                    <Globe size={22} />
                   </div>
                   <span style={{
                     fontSize: '0.75rem',
                     fontWeight: 800,
-                    letterSpacing: '1px',
-                    padding: '5px 12px',
-                    borderRadius: '8px',
-                    background: 'rgba(0, 209, 108, 0.15)',
-                    color: 'var(--primary-green)',
-                    border: '1px solid rgba(0, 209, 108, 0.3)'
+                    letterSpacing: '0.8px',
+                    padding: '4px 10px',
+                    borderRadius: '6px',
+                    background: 'rgba(0, 209, 108, 0.12)',
+                    color: 'var(--primary-green)'
                   }}>
                     01 • DISCOVERY
                   </span>
                 </div>
-                <h3 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#ffffff', marginBottom: '12px' }}>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff', marginBottom: '10px' }}>
                   Global Visibility
                 </h3>
-                <p style={{ color: '#94a3b8', fontSize: '0.95rem', lineHeight: '1.6', margin: 0 }}>
+                <p style={{ color: '#94a3b8', fontSize: '0.92rem', lineHeight: '1.6', margin: 0 }}>
                   Talented footballers are showcased worldwide without geographical limits or travel barriers, putting players directly in front of international clubs.
                 </p>
               </div>
               <div style={{
-                marginTop: '28px',
+                marginTop: '24px',
                 paddingTop: '16px',
-                borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+                borderTop: '1px solid rgba(255, 255, 255, 0.06)',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
@@ -404,123 +393,115 @@ export default function LandingPage() {
               </div>
             </div>
 
-            {/* Card 2: Interchanged Orange / Featured Highlight Card (Digital CV) */}
+            {/* Card 2: Digital CV */}
             <div style={{
-              background: 'linear-gradient(145deg, rgba(249, 115, 22, 0.12) 0%, rgba(18, 38, 26, 0.95) 100%)',
-              border: '1.5px solid rgba(249, 115, 22, 0.45)',
-              borderRadius: '20px',
-              padding: '32px 28px',
+              background: 'rgba(255, 255, 255, 0.03)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              borderRadius: '16px',
+              padding: '30px 24px',
               display: 'flex',
               flexDirection: 'column',
-              justifyContent: 'space-between',
-              boxShadow: '0 12px 36px rgba(249, 115, 22, 0.12)',
-              position: 'relative'
+              justifyContent: 'space-between'
             }}>
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                   <div style={{
-                    width: '50px',
-                    height: '50px',
-                    borderRadius: '14px',
-                    background: 'rgba(249, 115, 22, 0.22)',
-                    border: '1px solid rgba(249, 115, 22, 0.4)',
+                    width: '46px',
+                    height: '46px',
+                    borderRadius: '12px',
+                    background: 'rgba(0, 209, 108, 0.12)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    color: 'var(--secondary-orange)'
+                    color: 'var(--primary-green)'
                   }}>
-                    <Video size={24} />
+                    <Video size={22} />
                   </div>
                   <span style={{
                     fontSize: '0.75rem',
                     fontWeight: 800,
-                    letterSpacing: '1px',
-                    padding: '5px 12px',
-                    borderRadius: '8px',
-                    background: 'rgba(249, 115, 22, 0.22)',
-                    color: 'var(--secondary-orange)',
-                    border: '1px solid rgba(249, 115, 22, 0.4)'
+                    letterSpacing: '0.8px',
+                    padding: '4px 10px',
+                    borderRadius: '6px',
+                    background: 'rgba(0, 209, 108, 0.12)',
+                    color: 'var(--primary-green)'
                   }}>
                     02 • DIGITAL CV
                   </span>
                 </div>
-                <h3 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#ffffff', marginBottom: '12px' }}>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff', marginBottom: '10px' }}>
                   Permanent Football Portfolio
                 </h3>
-                <p style={{ color: '#cbd5e1', fontSize: '0.95rem', lineHeight: '1.6', margin: 0 }}>
+                <p style={{ color: '#94a3b8', fontSize: '0.92rem', lineHeight: '1.6', margin: 0 }}>
                   Build an immutable football passport featuring match highlights, physical stats, tactical positions, and verifiable career milestones in one place.
                 </p>
               </div>
               <div style={{
-                marginTop: '28px',
+                marginTop: '24px',
                 paddingTop: '16px',
-                borderTop: '1px solid rgba(249, 115, 22, 0.25)',
+                borderTop: '1px solid rgba(255, 255, 255, 0.06)',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                color: 'var(--secondary-orange)',
+                color: 'var(--primary-green)',
                 fontSize: '0.85rem',
                 fontWeight: 600
               }}>
-                <CheckCircle2 size={16} /> Up to 5MB High-Res Uploads
+                <CheckCircle2 size={16} /> Verified Highlights & Metrics
               </div>
             </div>
 
-            {/* Card 3: Interchanged Orange Badge (Opportunity) */}
+            {/* Card 3: Opportunity */}
             <div style={{
-              background: 'rgba(255, 255, 255, 0.04)',
-              border: '1px solid rgba(255, 255, 255, 0.09)',
-              borderRadius: '20px',
-              padding: '32px 28px',
+              background: 'rgba(255, 255, 255, 0.03)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              borderRadius: '16px',
+              padding: '30px 24px',
               display: 'flex',
               flexDirection: 'column',
-              justifyContent: 'space-between',
-              backdropFilter: 'blur(10px)',
-              position: 'relative'
+              justifyContent: 'space-between'
             }}>
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                   <div style={{
-                    width: '50px',
-                    height: '50px',
-                    borderRadius: '14px',
-                    background: 'rgba(249, 115, 22, 0.15)',
-                    border: '1px solid rgba(249, 115, 22, 0.3)',
+                    width: '46px',
+                    height: '46px',
+                    borderRadius: '12px',
+                    background: 'rgba(0, 209, 108, 0.12)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    color: 'var(--secondary-orange)'
+                    color: 'var(--primary-green)'
                   }}>
-                    <Zap size={24} />
+                    <Zap size={22} />
                   </div>
                   <span style={{
                     fontSize: '0.75rem',
                     fontWeight: 800,
-                    letterSpacing: '1px',
-                    padding: '5px 12px',
-                    borderRadius: '8px',
-                    background: 'rgba(249, 115, 22, 0.15)',
-                    color: 'var(--secondary-orange)',
-                    border: '1px solid rgba(249, 115, 22, 0.3)'
+                    letterSpacing: '0.8px',
+                    padding: '4px 10px',
+                    borderRadius: '6px',
+                    background: 'rgba(0, 209, 108, 0.12)',
+                    color: 'var(--primary-green)'
                   }}>
                     03 • OPPORTUNITY
                   </span>
                 </div>
-                <h3 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#ffffff', marginBottom: '12px' }}>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff', marginBottom: '10px' }}>
                   Direct Trials & Connection
                 </h3>
-                <p style={{ color: '#94a3b8', fontSize: '0.95rem', lineHeight: '1.6', margin: 0 }}>
+                <p style={{ color: '#94a3b8', fontSize: '0.92rem', lineHeight: '1.6', margin: 0 }}>
                   Cut out unnecessary gatekeepers. Licensed scouts and club officials initiate direct trial invitations and communication right through your dashboard.
                 </p>
               </div>
               <div style={{
-                marginTop: '28px',
+                marginTop: '24px',
                 paddingTop: '16px',
-                borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+                borderTop: '1px solid rgba(255, 255, 255, 0.06)',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                color: 'var(--secondary-orange)',
+                color: 'var(--primary-green)',
                 fontSize: '0.85rem',
                 fontWeight: 600
               }}>
@@ -528,57 +509,53 @@ export default function LandingPage() {
               </div>
             </div>
 
-            {/* Card 4: Green Badge (Verification) */}
+            {/* Card 4: Verification */}
             <div style={{
-              background: 'rgba(255, 255, 255, 0.04)',
-              border: '1px solid rgba(255, 255, 255, 0.09)',
-              borderRadius: '20px',
-              padding: '32px 28px',
+              background: 'rgba(255, 255, 255, 0.03)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              borderRadius: '16px',
+              padding: '30px 24px',
               display: 'flex',
               flexDirection: 'column',
-              justifyContent: 'space-between',
-              backdropFilter: 'blur(10px)',
-              position: 'relative'
+              justifyContent: 'space-between'
             }}>
               <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                   <div style={{
-                    width: '50px',
-                    height: '50px',
-                    borderRadius: '14px',
-                    background: 'rgba(0, 209, 108, 0.15)',
-                    border: '1px solid rgba(0, 209, 108, 0.3)',
+                    width: '46px',
+                    height: '46px',
+                    borderRadius: '12px',
+                    background: 'rgba(0, 209, 108, 0.12)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     color: 'var(--primary-green)'
                   }}>
-                    <ShieldCheck size={24} />
+                    <ShieldCheck size={22} />
                   </div>
                   <span style={{
                     fontSize: '0.75rem',
                     fontWeight: 800,
-                    letterSpacing: '1px',
-                    padding: '5px 12px',
-                    borderRadius: '8px',
-                    background: 'rgba(0, 209, 108, 0.15)',
-                    color: 'var(--primary-green)',
-                    border: '1px solid rgba(0, 209, 108, 0.3)'
+                    letterSpacing: '0.8px',
+                    padding: '4px 10px',
+                    borderRadius: '6px',
+                    background: 'rgba(0, 209, 108, 0.12)',
+                    color: 'var(--primary-green)'
                   }}>
                     04 • VERIFICATION
                   </span>
                 </div>
-                <h3 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#ffffff', marginBottom: '12px' }}>
-                  AI Ratings & Verification
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff', marginBottom: '10px' }}>
+                  Ratings & Verification
                 </h3>
-                <p style={{ color: '#94a3b8', fontSize: '0.95rem', lineHeight: '1.6', margin: 0 }}>
-                  Algorithmic evaluation of physical, technical, and psychological metrics gives players trusted badges that professional recruiters immediately rely upon.
+                <p style={{ color: '#94a3b8', fontSize: '0.92rem', lineHeight: '1.6', margin: 0 }}>
+                  Standardized evaluation of physical, technical, and tactical metrics gives players trusted badges that professional recruiters immediately rely upon.
                 </p>
               </div>
               <div style={{
-                marginTop: '28px',
+                marginTop: '24px',
                 paddingTop: '16px',
-                borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+                borderTop: '1px solid rgba(255, 255, 255, 0.06)',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
@@ -718,7 +695,7 @@ export default function LandingPage() {
           textAlign: 'center',
           position: 'relative',
           overflow: 'hidden',
-          backgroundImage: 'linear-gradient(180deg, rgba(8, 20, 14, 0.82) 0%, rgba(12, 30, 21, 0.88) 50%, rgba(6, 16, 11, 0.95) 100%), url("/opportunities-players.jpg")',
+          backgroundImage: 'linear-gradient(180deg, rgba(8, 20, 14, 0.35) 0%, rgba(10, 24, 18, 0.45) 50%, rgba(6, 16, 12, 0.65) 100%), url("/opportunities-players.jpg")',
           backgroundPosition: 'center center',
           backgroundSize: 'cover',
           backgroundRepeat: 'no-repeat',
@@ -733,7 +710,7 @@ export default function LandingPage() {
             transform: 'translate(-50%, -50%)',
             width: '650px',
             height: '350px',
-            background: 'radial-gradient(ellipse at center, rgba(0, 209, 108, 0.25) 0%, transparent 70%)',
+            background: 'radial-gradient(ellipse at center, rgba(0, 209, 108, 0.28) 0%, transparent 70%)',
             pointerEvents: 'none'
           }} />
 
@@ -742,6 +719,7 @@ export default function LandingPage() {
             fontWeight: 800,
             marginBottom: '16px',
             color: '#ffffff',
+            textShadow: '0 2px 16px rgba(0, 0, 0, 0.95), 0 4px 30px rgba(0, 0, 0, 0.85)',
             position: 'relative',
             zIndex: 1,
             letterSpacing: '-0.5px'
@@ -749,11 +727,12 @@ export default function LandingPage() {
             One Platform. <span style={{ color: 'var(--primary-green)' }}>Endless Opportunities.</span>
           </h2>
           <p style={{
-            color: '#e2e8f0',
+            color: '#f8fafc',
             marginBottom: '36px',
             fontSize: 'clamp(1.05rem, 2vw, 1.25rem)',
             maxWidth: '680px',
             margin: '0 auto 36px',
+            textShadow: '0 2px 14px rgba(0, 0, 0, 0.95), 0 3px 20px rgba(0, 0, 0, 0.8)',
             position: 'relative',
             zIndex: 1,
             lineHeight: 1.6

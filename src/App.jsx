@@ -148,20 +148,14 @@ function Navigation() {
             Sign Out
           </button>
         ) : (
-          <>
-            <Link to="/search" className="nav-search-btn" title="Search Players">
-              <span className="nav-search-text">Search Players</span>
-              <span className="nav-search-icon"><SearchIcon size={18} /></span>
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            <Link to="/login" className="btn-nav-login" style={{ textDecoration: 'none' }}>
+              Login
             </Link>
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <Link to="/login" className="btn-secondary" style={{ padding: '8px 14px', fontSize: '0.88rem', textDecoration: 'none' }}>
-                Login
-              </Link>
-              <Link to="/register" className="btn-primary" style={{ padding: '8px 16px', fontSize: '0.88rem', textDecoration: 'none' }}>
-                Sign Up
-              </Link>
-            </div>
-          </>
+            <Link to="/register" className="btn-nav-signup" style={{ textDecoration: 'none' }}>
+              Sign Up
+            </Link>
+          </div>
         )}
       </div>
     </nav>

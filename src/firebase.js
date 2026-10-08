@@ -212,11 +212,12 @@ const seedDatabase = () => {
     ];
 
     const mockUsers = [
-      { uid: 'admin1', email: 'admin@scoutceler.com', phone: '+1 800 555 0199', password: 'password', role: 'admin', fullName: 'Scoutceler Admin' },
-      { uid: 'scout1', email: 'scout@scoutceler.com', phone: '+44 20 7946 0991', password: 'password', role: 'scout', fullName: 'John Scout' },
-      { uid: 'p1', email: 'mbappe@scoutceler.com', phone: '+33 6 12 34 56 78', playerCode: 'SC-10001', password: 'password', role: 'player', fullName: 'Kylian Mbappé' },
-      { uid: 'p2', email: 'bukayo@scoutceler.com', phone: '+44 7911 123456', playerCode: 'SC-10002', password: 'password', role: 'player', fullName: 'Bukayo Saka' },
-      { uid: 'p3', email: 'junior@scoutceler.com', phone: '+234 803 123 4567', playerCode: 'SC-10003', password: 'password', role: 'player', fullName: 'Sunday Junior' }
+      { uid: 'admin1', email: 'admin@scoutceler.com', phone: '+1 800 555 0199', password: 'password', role: 'admin', fullName: 'Scoutceler Admin', createdAt: '2026-08-01T10:00:00.000Z' },
+      { uid: 'scout1', email: 'scout@scoutceler.com', phone: '+44 20 7946 0991', password: 'password', role: 'scout', fullName: 'John Scout', createdAt: '2026-08-15T12:30:00.000Z' },
+      { uid: 'club1', email: 'club@scoutceler.com', phone: '+34 91 398 4300', password: 'password', role: 'club', fullName: 'Madrid Talent Club', createdAt: '2026-08-20T14:15:00.000Z' },
+      { uid: 'p1', email: 'mbappe@scoutceler.com', phone: '+33 6 12 34 56 78', playerCode: 'SC-10001', password: 'password', role: 'player', fullName: 'Kylian Mbappé', createdAt: '2026-09-01T08:00:00.000Z' },
+      { uid: 'p2', email: 'bukayo@scoutceler.com', phone: '+44 7911 123456', playerCode: 'SC-10002', password: 'password', role: 'player', fullName: 'Bukayo Saka', createdAt: '2026-09-05T09:30:00.000Z' },
+      { uid: 'p3', email: 'junior@scoutceler.com', phone: '+234 803 123 4567', playerCode: 'SC-10003', password: 'password', role: 'player', fullName: 'Sunday Junior', createdAt: '2026-09-10T11:00:00.000Z' }
     ];
 
     setLocalData(STORAGE_KEYS.PROFILES, mockProfiles);
@@ -253,8 +254,39 @@ const seedDatabase = () => {
       setLocalData(STORAGE_KEYS.PROFILES, existingProfiles);
     }
 
-    const existingUsers = getLocalData(STORAGE_KEYS.USERS, []);
+    let existingUsers = getLocalData(STORAGE_KEYS.USERS, []);
     let usersChanged = false;
+
+    // If users array was empty, restore base seed users
+    if (existingUsers.length === 0) {
+      existingUsers = [
+        { uid: 'admin1', email: 'admin@scoutceler.com', phone: '+1 800 555 0199', password: 'password', role: 'admin', fullName: 'Scoutceler Admin', createdAt: '2026-08-01T10:00:00.000Z' },
+        { uid: 'scout1', email: 'scout@scoutceler.com', phone: '+44 20 7946 0991', password: 'password', role: 'scout', fullName: 'John Scout', createdAt: '2026-08-15T12:30:00.000Z' },
+        { uid: 'club1', email: 'club@scoutceler.com', phone: '+34 91 398 4300', password: 'password', role: 'club', fullName: 'Madrid Talent Club', createdAt: '2026-08-20T14:15:00.000Z' },
+        { uid: 'p1', email: 'mbappe@scoutceler.com', phone: '+33 6 12 34 56 78', playerCode: 'SC-10001', password: 'password', role: 'player', fullName: 'Kylian Mbappé', createdAt: '2026-09-01T08:00:00.000Z' },
+        { uid: 'p2', email: 'bukayo@scoutceler.com', phone: '+44 7911 123456', playerCode: 'SC-10002', password: 'password', role: 'player', fullName: 'Bukayo Saka', createdAt: '2026-09-05T09:30:00.000Z' },
+        { uid: 'p3', email: 'junior@scoutceler.com', phone: '+234 803 123 4567', playerCode: 'SC-10003', password: 'password', role: 'player', fullName: 'Sunday Junior', createdAt: '2026-09-10T11:00:00.000Z' }
+      ];
+      usersChanged = true;
+    }
+
+    // Ensure all existing profiles have corresponding user records
+    existingProfiles.forEach((p, idx) => {
+      if (!existingUsers.some(u => u.uid === p.uid || (u.email && p.email && u.email.toLowerCase() === p.email.toLowerCase()))) {
+        existingUsers.push({
+          uid: p.uid,
+          email: p.email || '',
+          phone: p.phone || '',
+          password: 'password',
+          role: p.role || 'player',
+          fullName: p.fullName || 'Player',
+          playerCode: p.playerCode || `SC-${10000 + idx + 1}`,
+          createdAt: new Date().toISOString()
+        });
+        usersChanged = true;
+      }
+    });
+
     existingUsers.forEach((u, idx) => {
       if (!u.phone && phoneMap[u.uid]) {
         u.phone = phoneMap[u.uid];
@@ -262,6 +294,10 @@ const seedDatabase = () => {
       }
       if (u.role === 'player' && !u.playerCode) {
         u.playerCode = codeMap[u.uid] || `SC-${10000 + idx + 1}`;
+        usersChanged = true;
+      }
+      if (!u.createdAt) {
+        u.createdAt = '2026-09-01T00:00:00.000Z';
         usersChanged = true;
       }
     });
@@ -303,7 +339,16 @@ export const auth = {
           playerCode = generatePlayerCode();
         }
 
-        const newUser = { uid, email: cleanEmail, phone: cleanPhone, password, role, fullName, playerCode };
+        const newUser = {
+          uid,
+          email: cleanEmail,
+          phone: cleanPhone,
+          password,
+          role,
+          fullName,
+          playerCode,
+          createdAt: new Date().toISOString()
+        };
         users.push(newUser);
         setLocalData(STORAGE_KEYS.USERS, users);
 
@@ -481,6 +526,76 @@ export const auth = {
   // Get Current Logged In User
   getCurrentUser: () => {
     return getLocalData(STORAGE_KEYS.CURRENT_USER, null);
+  },
+
+  // Admin: Get All Registered Users (Syncs users & profiles across roles: player, scout, club, admin)
+  getAllUsers: async () => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const users = getLocalData(STORAGE_KEYS.USERS, []);
+        const profiles = getLocalData(STORAGE_KEYS.PROFILES, []);
+
+        // Sync missing profiles into users
+        let usersChanged = false;
+        profiles.forEach((p, idx) => {
+          if (!users.some(u => u.uid === p.uid || (u.email && p.email && u.email.toLowerCase() === p.email.toLowerCase()))) {
+            users.push({
+              uid: p.uid,
+              email: p.email || '',
+              phone: p.phone || '',
+              password: 'password',
+              role: p.role || 'player',
+              fullName: p.fullName || 'Player',
+              playerCode: p.playerCode || `SC-${10000 + idx + 1}`,
+              createdAt: '2026-09-01T00:00:00.000Z'
+            });
+            usersChanged = true;
+          }
+        });
+
+        if (usersChanged) {
+          setLocalData(STORAGE_KEYS.USERS, users);
+        }
+
+        // Combine user auth records with profile metrics
+        const combined = users.map(u => {
+          const prof = profiles.find(p => p.uid === u.uid || (u.email && p.email && u.email.toLowerCase() === p.email.toLowerCase()));
+          return {
+            ...u,
+            profilePic: prof?.profilePic || '',
+            verification: prof?.verification || (u.role === 'player' ? 'none' : 'Verified Member'),
+            rating: prof?.rating ?? null,
+            nationality: prof?.nationality || '',
+            primaryPosition: prof?.primaryPosition || '',
+            currentClub: prof?.currentClub || '',
+            city: prof?.city || '',
+            state: prof?.state || '',
+            bio: prof?.bio || '',
+            playerCode: u.playerCode || prof?.playerCode || (u.role === 'player' ? 'SC-Pending' : null),
+            createdAt: u.createdAt || '2026-09-01T00:00:00.000Z'
+          };
+        });
+
+        resolve(combined);
+      }, 150);
+    });
+  },
+
+  // Admin: Delete user from both USERS and PROFILES
+  adminDeleteUser: async (uid) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        let users = getLocalData(STORAGE_KEYS.USERS, []);
+        users = users.filter(u => u.uid !== uid);
+        setLocalData(STORAGE_KEYS.USERS, users);
+
+        let profiles = getLocalData(STORAGE_KEYS.PROFILES, []);
+        profiles = profiles.filter(p => p.uid !== uid);
+        setLocalData(STORAGE_KEYS.PROFILES, profiles);
+
+        resolve(true);
+      }, 200);
+    });
   }
 };
 
@@ -609,7 +724,10 @@ export const db = {
       setLocalData(STORAGE_KEYS.PROFILES, profiles);
       resolve(profile);
     });
-  }
+  },
+
+  getAllUsers: auth.getAllUsers,
+  adminDeleteUser: auth.adminDeleteUser
 };
 
 // Storage Namespace (Mock)
