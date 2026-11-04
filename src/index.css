@@ -382,3 +382,16 @@ body {
     padding: 16px 12px !important;
   }
 }
+
+/* Hide Netlify drawer badge if injected */
+#netlify-drawer,
+[data-netlify-drawer],
+[class*="netlify-drawer"],
+#netlify-feedback-drawer,
+div[data-testid="feedback-button"],
+iframe[title*="Netlify"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
