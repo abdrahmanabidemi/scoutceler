@@ -44,9 +44,9 @@ export default function LandingPage() {
         maxWidth: '1220px',
         width: 'calc(100% - clamp(16px, 4vw, 32px))',
         margin: '16px auto 24px auto',
-        padding: 'clamp(56px, 8vw, 92px) clamp(20px, 4vw, 40px)',
+        padding: 'clamp(44px, 6.5vw, 76px) clamp(20px, 4vw, 40px)',
         borderRadius: 'clamp(18px, 3vw, 28px)',
-        backgroundImage: 'linear-gradient(180deg, rgba(7, 18, 12, 0.58) 0%, rgba(8, 22, 15, 0.68) 50%, rgba(5, 14, 10, 0.85) 100%), url("/hero-player.jpg")',
+        backgroundImage: 'linear-gradient(180deg, rgba(5, 15, 10, 0.28) 0%, rgba(7, 20, 13, 0.38) 50%, rgba(4, 12, 8, 0.62) 100%), url("/hero-player.jpg")',
         backgroundPosition: 'center 22%',
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
@@ -70,27 +70,6 @@ export default function LandingPage() {
           pointerEvents: 'none'
         }} />
 
-        <div style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '8px',
-          padding: '6px 16px',
-          borderRadius: '50px',
-          background: 'rgba(0, 209, 108, 0.16)',
-          border: '1px solid rgba(0, 209, 108, 0.4)',
-          color: '#ffffff',
-          fontSize: '0.82rem',
-          fontWeight: 700,
-          letterSpacing: '0.6px',
-          marginBottom: '20px',
-          position: 'relative',
-          zIndex: 1,
-          textTransform: 'uppercase'
-        }}>
-          <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--primary-green)', display: 'inline-block' }}></span>
-          Football Talent Discovery Platform
-        </div>
-
         <h1 style={{
           fontSize: 'clamp(2.1rem, 5.2vw, 3.75rem)',
           fontWeight: 800,
@@ -99,7 +78,7 @@ export default function LandingPage() {
           marginBottom: '20px',
           letterSpacing: '-1px',
           color: '#ffffff',
-          textShadow: '0 2px 4px rgba(0, 0, 0, 0.4), 0 6px 20px rgba(0, 0, 0, 0.5)',
+          textShadow: '0 2px 4px rgba(0, 0, 0, 0.65), 0 5px 22px rgba(0, 0, 0, 0.75)',
           position: 'relative',
           zIndex: 1
         }}>
@@ -112,7 +91,7 @@ export default function LandingPage() {
           maxWidth: '720px',
           lineHeight: '1.6',
           marginBottom: '36px',
-          textShadow: '0 1px 3px rgba(0, 0, 0, 0.6)',
+          textShadow: '0 1px 3px rgba(0, 0, 0, 0.8), 0 3px 12px rgba(0, 0, 0, 0.7)',
           position: 'relative',
           zIndex: 1
         }}>
@@ -151,21 +130,7 @@ export default function LandingPage() {
         width: '100%'
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '44px' }}>
-            <span style={{
-              display: 'inline-block',
-              fontSize: '0.78rem',
-              fontWeight: 800,
-              color: 'var(--primary-green)',
-              background: 'rgba(0, 209, 108, 0.1)',
-              padding: '4px 12px',
-              borderRadius: '20px',
-              marginBottom: '10px',
-              letterSpacing: '0.8px',
-              textTransform: 'uppercase'
-            }}>
-              Paths to Opportunity
-            </span>
+          <div style={{ textAlign: 'center', marginBottom: '32px' }}>
             <h2 style={{
               fontSize: 'clamp(1.9rem, 3.5vw, 2.5rem)',
               fontWeight: 800,
@@ -350,22 +315,7 @@ export default function LandingPage() {
         position: 'relative'
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
-          <div style={{ textAlign: 'center', marginBottom: '44px' }}>
-            <span style={{
-              display: 'inline-block',
-              fontSize: '0.78rem',
-              fontWeight: 800,
-              color: 'var(--primary-green)',
-              background: 'rgba(0, 209, 108, 0.12)',
-              border: '1px solid rgba(0, 209, 108, 0.25)',
-              padding: '4px 12px',
-              borderRadius: '20px',
-              marginBottom: '10px',
-              letterSpacing: '0.8px',
-              textTransform: 'uppercase'
-            }}>
-              Platform Advantage
-            </span>
+          <div style={{ textAlign: 'center', marginBottom: '32px' }}>
             <h2 style={{
               fontSize: 'clamp(1.9rem, 3.5vw, 2.5rem)',
               fontWeight: 800,
@@ -586,21 +536,7 @@ export default function LandingPage() {
         width: '100%'
       }}>
         <div style={{ maxWidth: '840px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '44px' }}>
-            <span style={{
-              display: 'inline-block',
-              fontSize: '0.78rem',
-              fontWeight: 800,
-              color: 'var(--primary-green)',
-              background: 'rgba(0, 209, 108, 0.1)',
-              padding: '4px 14px',
-              borderRadius: '20px',
-              marginBottom: '10px',
-              letterSpacing: '0.8px',
-              textTransform: 'uppercase'
-            }}>
-              Help & Support
-            </span>
+          <div style={{ textAlign: 'center', marginBottom: '32px' }}>
             <h2 style={{
               fontSize: 'clamp(1.9rem, 3.5vw, 2.5rem)',
               fontWeight: 800,
