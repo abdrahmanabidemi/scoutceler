@@ -11,9 +11,6 @@ import Admin from './pages/Admin';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import { 
-  Search as SearchIcon,
-  LogOut, 
-  LayoutDashboard, 
   Phone, 
   Mail 
 } from 'lucide-react';
@@ -78,51 +75,53 @@ function Navigation() {
     return '/dashboard';
   };
 
+  const isHome = location.pathname === '/';
+
   return (
     <nav className="glass" style={{
       height: 'var(--header-height)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      padding: '0 clamp(14px, 3.5vw, 40px)',
+      padding: '0 clamp(16px, 3.5vw, 40px)',
       position: 'sticky',
       top: 0,
       zIndex: 100,
       borderBottom: '1px solid var(--border-color)',
     }}>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
         {currentUser ? (
-          <Link to={getDashboardPath()} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '14px' }} title="Go to Dashboard">
+          <Link to={getDashboardPath()} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }} title="Go to Dashboard">
             <img 
               src="/logo.jpg" 
               alt="Scoutceler Logo" 
               style={{ 
-                height: 'clamp(70px, 9vw, 95px)', 
+                height: 'clamp(52px, 6vw, 68px)', 
                 objectFit: 'contain',
                 filter: 'invert(1) hue-rotate(180deg) contrast(1.15)',
                 mixBlendMode: 'multiply'
               }} 
             />
             <span style={{
-              fontSize: '1.05rem',
-              fontWeight: 800,
+              fontSize: '0.9rem',
+              fontWeight: 700,
               color: 'var(--text-primary)',
-              padding: '6px 14px',
-              borderRadius: '8px',
+              padding: '4px 10px',
+              borderRadius: '6px',
               background: 'rgba(0, 209, 108, 0.1)',
-              border: '1.5px solid rgba(0, 209, 108, 0.3)',
+              border: '1px solid rgba(0, 209, 108, 0.3)',
               letterSpacing: '-0.2px'
             }}>
               Dashboard
             </span>
           </Link>
         ) : (
-          <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
+          <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }} title="Scoutceler Home">
             <img 
               src="/logo.jpg" 
               alt="Scoutceler Logo" 
               style={{ 
-                height: 'clamp(70px, 9vw, 95px)', 
+                height: 'clamp(52px, 6vw, 68px)', 
                 objectFit: 'contain',
                 filter: 'invert(1) hue-rotate(180deg) contrast(1.15)',
                 mixBlendMode: 'multiply'
@@ -130,18 +129,28 @@ function Navigation() {
             />
           </Link>
         )}
+
+        {/* Lightweight Section Links for Home Navigation (Desktop) */}
+        {!currentUser && isHome && (
+          <div className="nav-desktop-links" style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+            <a href="#how-it-works" className="nav-text-link">How It Works</a>
+            <a href="#why-scoutceler" className="nav-text-link">Why Scoutceler</a>
+            <a href="#faq" className="nav-text-link">FAQ</a>
+            <Link to="/search" className="nav-text-link">Explore Talent</Link>
+          </div>
+        )}
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(8px, 2vw, 20px)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
         {currentUser ? (
           <button
             onClick={handleLogout}
             className="btn-secondary"
             style={{
-              padding: '8px 20px',
+              padding: '8px 18px',
               fontSize: '0.88rem',
               fontWeight: 600,
-              borderRadius: '50px',
+              borderRadius: '8px',
               cursor: 'pointer'
             }}
           >
@@ -194,13 +203,13 @@ function Footer() {
               src="/logo.jpg" 
               alt="Scoutceler Logo" 
               style={{ 
-                height: '40px', 
+                height: '42px', 
                 objectFit: 'contain'
               }} 
             />
           </div>
-          <p style={{ color: '#94a3b8', fontSize: '0.9rem', lineHeight: '1.6' }}>
-            Democratizing football opportunities globally. The ultimate scouting and talent networking ecosystem built for the future of football.
+          <p style={{ color: '#94a3b8', fontSize: '0.88rem', lineHeight: '1.6', maxWidth: '340px' }}>
+            Scoutceler is a football talent platform connecting players, scouts, agents, and clubs through verified profiles, video highlights, and intelligent scouting tools.
           </p>
         </div>
 
@@ -223,11 +232,11 @@ function Footer() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '0.9rem', color: '#94a3b8' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <Phone size={16} color="var(--primary-green)" />
-              <span style={{ color: '#f1f5f9' }}>+2347038075053</span>
+              <a href="tel:+2347038075053" style={{ color: '#f1f5f9', textDecoration: 'none' }}>+234 703 807 5053</a>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <Mail size={16} color="var(--secondary-orange)" />
-              <span style={{ color: '#f1f5f9' }}>scoutceler.business@gmail.com</span>
+              <a href="mailto:scoutceler.business@gmail.com" style={{ color: '#f1f5f9', textDecoration: 'none' }}>scoutceler.business@gmail.com</a>
             </div>
           </div>
         </div>

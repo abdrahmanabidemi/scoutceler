@@ -24,7 +24,7 @@
   --text-muted: #94a3b8;
 
   /* Layout constants */
-  --header-height: 96px;
+  --header-height: 76px;
 
   color-scheme: light;
   background-color: var(--bg-dark);
@@ -34,6 +34,10 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 * {
@@ -301,10 +305,29 @@ body {
   gap: 40px;
 }
 
+/* Navigation Desktop Links */
+.nav-text-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.nav-text-link:hover {
+  color: var(--primary-green);
+}
+
+@media (max-width: 900px) {
+  .nav-desktop-links {
+    display: none !important;
+  }
+}
+
 /* Mobile Media Queries (<= 768px) */
 @media (max-width: 768px) {
   :root {
-    --header-height: 84px;
+    --header-height: 70px;
   }
 
   /* Navigation on mobile */
@@ -383,13 +406,18 @@ body {
   }
 }
 
-/* Hide Netlify drawer badge if injected */
+/* Hide Netlify drawer badge or footer badge if injected */
 #netlify-drawer,
 [data-netlify-drawer],
 [class*="netlify-drawer"],
 #netlify-feedback-drawer,
 div[data-testid="feedback-button"],
-iframe[title*="Netlify"] {
+iframe[title*="Netlify"],
+.netlify-badge,
+[class*="netlify-badge"],
+[aria-label*="Netlify"],
+a[href*="netlify.com"][class*="badge"],
+div[class*="NetlifyBadge"] {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
